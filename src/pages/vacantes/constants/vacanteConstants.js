@@ -39,6 +39,13 @@ export const HABILIDADES_SUGERIDAS = [
     'Docker', 'SQL', 'Git', 'Agile', 'Scrum', 'Figma'
 ];
 
+// Suggested minimum requirements
+export const REQUISITOS_SUGERIDOS = [
+    'Bachillerato en Ingeniería', 'Técnico en Ingeniería', 'Licenciatura',
+    'Mayor de 18 años', 'Mayor de 21 años', 'Licencia de conducir',
+    'Disponibilidad para viajar', 'Inglés intermedio', 'Inglés avanzado'
+];
+
 // Suggested benefits
 export const BENEFICIOS_SUGERIDOS = [
     'Seguro de gastos médicos', 'Home office', 'Horario flexible',
@@ -60,7 +67,8 @@ export const INITIAL_VACANTE_STATE = {
     mostrarSalario: true,
     experienciaMin: '',
     experienciaMax: '',
-    habilidades: [],
+    requisitosMinimos: [],
+    habilidadesDeseadas: [],
     beneficios: [],
     reclutadorNombre: '',
     reclutadorEmail: '',

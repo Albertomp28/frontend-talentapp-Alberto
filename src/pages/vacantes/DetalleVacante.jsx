@@ -96,14 +96,35 @@ const DetalleVacante = () => {
             <p className="text-slate-600 whitespace-pre-line">{vacante.descripcion || 'Sin descripción disponible.'}</p>
           </div>
 
-          {vacante.habilidades && vacante.habilidades.length > 0 && (
+          {/* Minimum Requirements */}
+          {vacante.requisitosMinimos && vacante.requisitosMinimos.length > 0 && (
             <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
               <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-800 mb-4">
-                <svg className="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                Habilidades requeridas
+                <svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                Requisitos Mínimos
+                <span className="text-xs font-normal text-slate-500">(Obligatorios)</span>
+              </h2>
+              <div className="space-y-2">
+                {vacante.requisitosMinimos.map((requisito, index) => (
+                  <div key={index} className="flex items-center gap-2 text-slate-600">
+                    <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    {requisito}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Desired Skills */}
+          {((vacante.habilidadesDeseadas && vacante.habilidadesDeseadas.length > 0) || (vacante.habilidades && vacante.habilidades.length > 0)) && (
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+              <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-800 mb-4">
+                <svg className="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                Habilidades Deseadas
+                <span className="text-xs font-normal text-slate-500">(Nice to have)</span>
               </h2>
               <div className="flex flex-wrap gap-2">
-                {vacante.habilidades.map((skill, index) => (
+                {(vacante.habilidadesDeseadas || vacante.habilidades).map((skill, index) => (
                   <span key={index} className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm">{skill}</span>
                 ))}
               </div>

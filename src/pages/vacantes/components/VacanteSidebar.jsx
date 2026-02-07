@@ -2,7 +2,7 @@
  * Vacancy Summary Sidebar
  * Displays real-time preview of vacancy data
  */
-const VacanteSidebar = ({ vacante, eliminarHabilidad, eliminarBeneficio }) => {
+const VacanteSidebar = ({ vacante, eliminarRequisitoMinimo, eliminarHabilidadDeseada, eliminarBeneficio }) => {
     return (
         <div className="lg:col-span-4">
             <div className="sticky top-4 space-y-4">
@@ -33,19 +33,47 @@ const VacanteSidebar = ({ vacante, eliminarHabilidad, eliminarBeneficio }) => {
                         </div>
                     </div>
 
-                    {/* Skills List Preview */}
+                    {/* Minimum Requirements List Preview */}
+                    <div className="mb-4">
+                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex justify-between items-center">
+                            Requisitos Mínimos
+                            <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-[10px]">{vacante.requisitosMinimos?.length || 0}</span>
+                        </h4>
+                        {vacante.requisitosMinimos?.length > 0 ? (
+                            <div className="flex flex-wrap gap-2">
+                                {vacante.requisitosMinimos.map((requisito, index) => (
+                                    <span key={index} className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-50 text-orange-700 rounded-lg text-sm border border-orange-100">
+                                        {requisito}
+                                        <button
+                                            onClick={() => eliminarRequisitoMinimo(requisito)}
+                                            className="text-orange-400 hover:text-red-500 transition-colors"
+                                            title="Eliminar requisito"
+                                        >
+                                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                                <p className="text-xs text-slate-400">Sin requisitos mínimos</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Desired Skills List Preview */}
                     <div className="mb-6">
                         <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex justify-between items-center">
-                            Habilidades Agregadas
-                            <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-[10px]">{vacante.habilidades.length}</span>
+                            Habilidades Deseadas
+                            <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-[10px]">{vacante.habilidadesDeseadas?.length || 0}</span>
                         </h4>
-                        {vacante.habilidades.length > 0 ? (
+                        {vacante.habilidadesDeseadas?.length > 0 ? (
                             <div className="flex flex-wrap gap-2">
-                                {vacante.habilidades.map((skill, index) => (
+                                {vacante.habilidadesDeseadas.map((skill, index) => (
                                     <span key={index} className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm border border-blue-100">
                                         {skill}
                                         <button
-                                            onClick={() => eliminarHabilidad(skill)}
+                                            onClick={() => eliminarHabilidadDeseada(skill)}
                                             className="text-blue-400 hover:text-red-500 transition-colors"
                                             title="Eliminar habilidad"
                                         >
@@ -55,8 +83,8 @@ const VacanteSidebar = ({ vacante, eliminarHabilidad, eliminarBeneficio }) => {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-6 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                                <p className="text-sm text-slate-400">Aún no hay habilidades</p>
+                            <div className="text-center py-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                                <p className="text-xs text-slate-400">Sin habilidades deseadas</p>
                             </div>
                         )}
                     </div>

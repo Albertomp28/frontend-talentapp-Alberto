@@ -35,14 +35,18 @@ const CrearVacante = () => {
     showSuccessModal,
     createdVacanteId,
     copied,
-    nuevaHabilidad,
-    setNuevaHabilidad,
+    nuevoRequisitoMinimo,
+    setNuevoRequisitoMinimo,
+    nuevaHabilidadDeseada,
+    setNuevaHabilidadDeseada,
     nuevoBeneficio,
     setNuevoBeneficio,
     handleNextStep,
     handlePrevStep,
-    agregarHabilidad,
-    eliminarHabilidad,
+    agregarRequisitoMinimo,
+    eliminarRequisitoMinimo,
+    agregarHabilidadDeseada,
+    eliminarHabilidadDeseada,
     agregarBeneficio,
     eliminarBeneficio,
     handleSubmit,
@@ -106,11 +110,14 @@ const CrearVacante = () => {
               <VacanteStep3
                 vacante={vacante}
                 setVacante={setVacante}
-                nuevaHabilidad={nuevaHabilidad}
-                setNuevaHabilidad={setNuevaHabilidad}
+                nuevoRequisitoMinimo={nuevoRequisitoMinimo}
+                setNuevoRequisitoMinimo={setNuevoRequisitoMinimo}
+                nuevaHabilidadDeseada={nuevaHabilidadDeseada}
+                setNuevaHabilidadDeseada={setNuevaHabilidadDeseada}
                 nuevoBeneficio={nuevoBeneficio}
                 setNuevoBeneficio={setNuevoBeneficio}
-                agregarHabilidad={agregarHabilidad}
+                agregarRequisitoMinimo={agregarRequisitoMinimo}
+                agregarHabilidadDeseada={agregarHabilidadDeseada}
                 agregarBeneficio={agregarBeneficio}
               />
             )}
@@ -165,7 +172,8 @@ const CrearVacante = () => {
         {/* Right Sidebar - Vacancy Summary (4 cols) */}
         <VacanteSidebar
           vacante={vacante}
-          eliminarHabilidad={eliminarHabilidad}
+          eliminarRequisitoMinimo={eliminarRequisitoMinimo}
+          eliminarHabilidadDeseada={eliminarHabilidadDeseada}
           eliminarBeneficio={eliminarBeneficio}
         />
       </div>

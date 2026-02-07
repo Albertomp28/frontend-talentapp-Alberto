@@ -65,10 +65,10 @@ const VacanteCard = ({
                 </p>
             )}
 
-            {/* Skills */}
-            {vacante.habilidades?.length > 0 && (
+            {/* Skills - Show desired skills (blue) */}
+            {((vacante.habilidadesDeseadas?.length > 0) || (vacante.habilidades?.length > 0)) && (
                 <div className="flex flex-wrap gap-1.5 mb-4">
-                    {vacante.habilidades.slice(0, 4).map((skill, idx) => (
+                    {(vacante.habilidadesDeseadas || vacante.habilidades || []).slice(0, 4).map((skill, idx) => (
                         <span
                             key={idx}
                             className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-xs"
@@ -76,9 +76,9 @@ const VacanteCard = ({
                             {skill}
                         </span>
                     ))}
-                    {vacante.habilidades.length > 4 && (
+                    {(vacante.habilidadesDeseadas || vacante.habilidades || []).length > 4 && (
                         <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-xs">
-                            +{vacante.habilidades.length - 4}
+                            +{(vacante.habilidadesDeseadas || vacante.habilidades || []).length - 4}
                         </span>
                     )}
                 </div>

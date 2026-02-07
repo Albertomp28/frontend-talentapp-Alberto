@@ -19,7 +19,8 @@ export const useVacanteForm = () => {
     const [copied, setCopied] = useState(false);
     const [loading, setLoading] = useState(isEditMode);
     const [vacante, setVacante] = useState(INITIAL_VACANTE_STATE);
-    const [nuevaHabilidad, setNuevaHabilidad] = useState('');
+    const [nuevoRequisitoMinimo, setNuevoRequisitoMinimo] = useState('');
+    const [nuevaHabilidadDeseada, setNuevaHabilidadDeseada] = useState('');
     const [nuevoBeneficio, setNuevoBeneficio] = useState('');
 
     // Load vacancy data in edit mode
@@ -44,7 +45,8 @@ export const useVacanteForm = () => {
                     mostrarSalario: vacanteEncontrada.mostrarSalario ?? true,
                     experienciaMin: vacanteEncontrada.experienciaMin || vacanteEncontrada.experiencia || '',
                     experienciaMax: vacanteEncontrada.experienciaMax || '',
-                    habilidades: vacanteEncontrada.habilidades || [],
+                    requisitosMinimos: vacanteEncontrada.requisitosMinimos || [],
+                    habilidadesDeseadas: vacanteEncontrada.habilidadesDeseadas || vacanteEncontrada.habilidades || [],
                     beneficios: vacanteEncontrada.beneficios || [],
                     reclutadorNombre: vacanteEncontrada.reclutadorNombre || '',
                     reclutadorEmail: vacanteEncontrada.reclutadorEmail || '',
@@ -73,18 +75,33 @@ export const useVacanteForm = () => {
         }
     };
 
-    // Skills handlers
-    const agregarHabilidad = (skill) => {
-        if (skill && !vacante.habilidades.includes(skill)) {
-            setVacante({ ...vacante, habilidades: [...vacante.habilidades, skill] });
-            setNuevaHabilidad('');
+    // Minimum requirements handlers
+    const agregarRequisitoMinimo = (requisito) => {
+        if (requisito && !vacante.requisitosMinimos.includes(requisito)) {
+            setVacante({ ...vacante, requisitosMinimos: [...vacante.requisitosMinimos, requisito] });
+            setNuevoRequisitoMinimo('');
         }
     };
 
-    const eliminarHabilidad = (skill) => {
+    const eliminarRequisitoMinimo = (requisito) => {
         setVacante({
             ...vacante,
-            habilidades: vacante.habilidades.filter(h => h !== skill)
+            requisitosMinimos: vacante.requisitosMinimos.filter(r => r !== requisito)
+        });
+    };
+
+    // Desired skills handlers
+    const agregarHabilidadDeseada = (skill) => {
+        if (skill && !vacante.habilidadesDeseadas.includes(skill)) {
+            setVacante({ ...vacante, habilidadesDeseadas: [...vacante.habilidadesDeseadas, skill] });
+            setNuevaHabilidadDeseada('');
+        }
+    };
+
+    const eliminarHabilidadDeseada = (skill) => {
+        setVacante({
+            ...vacante,
+            habilidadesDeseadas: vacante.habilidadesDeseadas.filter(h => h !== skill)
         });
     };
 
@@ -168,8 +185,10 @@ export const useVacanteForm = () => {
         setShowSuccessModal,
         createdVacanteId,
         copied,
-        nuevaHabilidad,
-        setNuevaHabilidad,
+        nuevoRequisitoMinimo,
+        setNuevoRequisitoMinimo,
+        nuevaHabilidadDeseada,
+        setNuevaHabilidadDeseada,
         nuevoBeneficio,
         setNuevoBeneficio,
 
@@ -177,9 +196,11 @@ export const useVacanteForm = () => {
         handleNextStep,
         handlePrevStep,
 
-        // Skills & Benefits
-        agregarHabilidad,
-        eliminarHabilidad,
+        // Requirements, Skills & Benefits
+        agregarRequisitoMinimo,
+        eliminarRequisitoMinimo,
+        agregarHabilidadDeseada,
+        eliminarHabilidadDeseada,
         agregarBeneficio,
         eliminarBeneficio,
 
