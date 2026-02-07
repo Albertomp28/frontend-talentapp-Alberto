@@ -26,6 +26,8 @@ import DeleteVacanteModal from './components/DeleteVacanteModal';
 const MisVacantes = () => {
   const {
     // State
+    loading,
+    error,
     busqueda,
     filtroEstado,
     showDeleteModal,
@@ -41,7 +43,8 @@ const MisVacantes = () => {
     setFiltroEstado,
 
     // Actions
-    toggleEstadoVacante,
+    publicarVacante,
+    cerrarVacante,
     confirmarEliminar,
     cancelarEliminar,
     eliminarVacante,
@@ -82,24 +85,44 @@ const MisVacantes = () => {
         onFiltroChange={setFiltroEstado}
       />
 
+      {/* Loading State */}
+      {loading && (
+        <div className="flex items-center justify-center py-16">
+          <div className="text-center">
+            <div className="w-8 h-8 border-2 border-slate-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-3"></div>
+            <p className="text-slate-500">Cargando vacantes...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 mb-6">
+          {error}
+        </div>
+      )}
+
       {/* Vacancies List */}
-      {departamentos.length === 0 ? (
+      {!loading && departamentos.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="space-y-8">
-          {departamentos.map((departamento) => (
-            <DepartmentSection
-              key={departamento}
-              departamento={departamento}
-              vacantes={vacantesAgrupadas[departamento]}
-              onView={verVacante}
-              onEdit={editarVacante}
-              onCopy={copiarEnlace}
-              onToggleStatus={toggleEstadoVacante}
-              onDelete={confirmarEliminar}
-            />
-          ))}
-        </div>
+        !loading && (
+          <div className="space-y-8">
+            {departamentos.map((departamento) => (
+              <DepartmentSection
+                key={departamento}
+                departamento={departamento}
+                vacantes={vacantesAgrupadas[departamento]}
+                onView={verVacante}
+                onEdit={editarVacante}
+                onCopy={copiarEnlace}
+                onPublish={publicarVacante}
+                onClose={cerrarVacante}
+                onDelete={confirmarEliminar}
+              />
+            ))}
+          </div>
+        )
       )}
 
       {/* Delete Modal */}
@@ -122,8 +145,9 @@ const DepartmentSection = ({
   onView,
   onEdit,
   onCopy,
-  onToggleStatus,
-  onDelete
+  onPublish,
+  onClose,
+  onDelete,
 }) => (
   <div>
     <div className="flex items-center justify-between mb-4 pb-2 border-b border-neutral-200">
@@ -147,7 +171,8 @@ const DepartmentSection = ({
           onView={onView}
           onEdit={onEdit}
           onCopy={onCopy}
-          onToggleStatus={onToggleStatus}
+          onPublish={onPublish}
+          onClose={onClose}
           onDelete={onDelete}
         />
       ))}

@@ -1,7 +1,7 @@
 /**
  * useMisVacantes Hook
  * Custom hook for managing the MisVacantes page state and logic.
- * 
+ *
  * @module pages/vacantes/hooks/useMisVacantes
  */
 
@@ -14,135 +14,165 @@ import { vacancyService } from '../../../services';
  * @returns {Object} State and handlers for MisVacantes
  */
 export const useMisVacantes = () => {
-    const navigate = useNavigate();
-    const [vacantes, setVacantes] = useState([]);
-    const [filtroEstado, setFiltroEstado] = useState('todas');
-    const [busqueda, setBusqueda] = useState('');
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [vacanteToDelete, setVacanteToDelete] = useState(null);
+  const navigate = useNavigate();
+  const [vacantes, setVacantes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filtroEstado, setFiltroEstado] = useState('todas');
+  const [busqueda, setBusqueda] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [vacanteToDelete, setVacanteToDelete] = useState(null);
 
-    // Load vacancies on mount
-    useEffect(() => {
-        cargarVacantes();
-    }, []);
+  // Load vacancies on mount
+  useEffect(() => {
+    cargarVacantes();
+  }, []);
 
-    const cargarVacantes = useCallback(() => {
-        const vacantesGuardadas = vacancyService.getAll();
-        setVacantes(vacantesGuardadas);
-    }, []);
+  const cargarVacantes = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const vacantesData = await vacancyService.getAll();
+      setVacantes(vacantesData);
+    } catch (err) {
+      console.error('Error loading vacancies:', err);
+      setError('Error al cargar las vacantes');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    // Filter vacancies based on search and status filter
-    const vacantesFiltradas = useMemo(() => {
-        return vacantes.filter(v => {
-            const matchEstado = filtroEstado === 'todas' || v.estado === filtroEstado;
-            const matchBusqueda = v.titulo.toLowerCase().includes(busqueda.toLowerCase()) ||
-                v.departamento?.toLowerCase().includes(busqueda.toLowerCase());
-            return matchEstado && matchBusqueda;
-        });
-    }, [vacantes, filtroEstado, busqueda]);
+  // Filter vacancies based on search and status filter
+  const vacantesFiltradas = useMemo(() => {
+    return vacantes.filter((v) => {
+      const matchEstado = filtroEstado === 'todas' || v.estado === filtroEstado;
+      const matchBusqueda =
+        v.titulo?.toLowerCase().includes(busqueda.toLowerCase()) ||
+        v.departamento?.toLowerCase().includes(busqueda.toLowerCase());
+      return matchEstado && matchBusqueda;
+    });
+  }, [vacantes, filtroEstado, busqueda]);
 
-    // Group vacancies by department
-    const vacantesAgrupadas = useMemo(() => {
-        return vacantesFiltradas.reduce((acc, vacante) => {
-            const dept = vacante.departamento || 'Sin departamento';
-            if (!acc[dept]) {
-                acc[dept] = [];
-            }
-            acc[dept].push(vacante);
-            return acc;
-        }, {});
-    }, [vacantesFiltradas]);
+  // Group vacancies by department
+  const vacantesAgrupadas = useMemo(() => {
+    return vacantesFiltradas.reduce((acc, vacante) => {
+      const dept = vacante.departamento || 'Sin departamento';
+      if (!acc[dept]) {
+        acc[dept] = [];
+      }
+      acc[dept].push(vacante);
+      return acc;
+    }, {});
+  }, [vacantesFiltradas]);
 
-    const departamentos = useMemo(() => {
-        return Object.keys(vacantesAgrupadas).sort();
-    }, [vacantesAgrupadas]);
+  const departamentos = useMemo(() => {
+    return Object.keys(vacantesAgrupadas).sort();
+  }, [vacantesAgrupadas]);
 
-    // Statistics
-    const stats = useMemo(() => ({
-        total: vacantes.length,
-        activas: vacantes.filter(v => v.estado === 'activa').length,
-        pausadas: vacantes.filter(v => v.estado === 'pausada').length,
-    }), [vacantes]);
+  // Statistics
+  const stats = useMemo(
+    () => ({
+      total: vacantes.length,
+      draft: vacantes.filter((v) => v.estado === 'draft').length,
+      published: vacantes.filter((v) => v.estado === 'published').length,
+      closed: vacantes.filter((v) => v.estado === 'closed').length,
+    }),
+    [vacantes]
+  );
 
-    // Toggle vacancy status
-    const toggleEstadoVacante = useCallback((id) => {
-        const result = vacancyService.toggleStatus(id);
-        if (result.success) {
-            setVacantes(prevVacantes =>
-                prevVacantes.map(v =>
-                    v.id === id ? { ...v, estado: v.estado === 'activa' ? 'pausada' : 'activa' } : v
-                )
-            );
-        }
-    }, []);
+  // Publish vacancy
+  const publicarVacante = useCallback(async (id) => {
+    const result = await vacancyService.publish(id);
+    if (result.success) {
+      setVacantes((prev) => prev.map((v) => (v.id === id ? { ...v, estado: 'published' } : v)));
+    }
+    return result;
+  }, []);
 
-    // Confirm delete modal
-    const confirmarEliminar = useCallback((vacante) => {
-        setVacanteToDelete(vacante);
-        setShowDeleteModal(true);
-    }, []);
+  // Close vacancy
+  const cerrarVacante = useCallback(async (id) => {
+    const result = await vacancyService.close(id);
+    if (result.success) {
+      setVacantes((prev) => prev.map((v) => (v.id === id ? { ...v, estado: 'closed' } : v)));
+    }
+    return result;
+  }, []);
 
-    const cancelarEliminar = useCallback(() => {
-        setShowDeleteModal(false);
-        setVacanteToDelete(null);
-    }, []);
+  // Confirm delete modal
+  const confirmarEliminar = useCallback((vacante) => {
+    setVacanteToDelete(vacante);
+    setShowDeleteModal(true);
+  }, []);
 
-    // Delete vacancy
-    const eliminarVacante = useCallback(() => {
-        if (!vacanteToDelete) return;
+  const cancelarEliminar = useCallback(() => {
+    setShowDeleteModal(false);
+    setVacanteToDelete(null);
+  }, []);
 
-        const result = vacancyService.remove(vacanteToDelete.id);
-        if (result.success) {
-            setVacantes(prev => prev.filter(v => v.id !== vacanteToDelete.id));
-        }
+  // Delete vacancy (Note: backend doesn't have delete endpoint yet)
+  const eliminarVacante = useCallback(() => {
+    if (!vacanteToDelete) return;
 
-        setShowDeleteModal(false);
-        setVacanteToDelete(null);
-    }, [vacanteToDelete]);
+    // For now, just remove from local state
+    // TODO: Add delete endpoint to backend
+    setVacantes((prev) => prev.filter((v) => v.id !== vacanteToDelete.id));
 
-    // Copy vacancy link
-    const copiarEnlace = useCallback((id) => {
-        const url = `${window.location.origin}/vacantes/${id}`;
-        navigator.clipboard.writeText(url);
-    }, []);
+    setShowDeleteModal(false);
+    setVacanteToDelete(null);
+  }, [vacanteToDelete]);
 
-    // Navigation helpers
-    const verVacante = useCallback((id) => {
-        navigate(`/vacantes/${id}`);
-    }, [navigate]);
+  // Copy vacancy link
+  const copiarEnlace = useCallback((id) => {
+    const url = `${window.location.origin}/vacantes/${id}`;
+    navigator.clipboard.writeText(url);
+  }, []);
 
-    const editarVacante = useCallback((id) => {
-        navigate(`/vacantes/editar/${id}`);
-    }, [navigate]);
+  // Navigation helpers
+  const verVacante = useCallback(
+    (id) => {
+      navigate(`/vacantes/${id}`);
+    },
+    [navigate]
+  );
 
-    return {
-        // State
-        vacantes,
-        filtroEstado,
-        busqueda,
-        showDeleteModal,
-        vacanteToDelete,
+  const editarVacante = useCallback(
+    (id) => {
+      navigate(`/vacantes/editar/${id}`);
+    },
+    [navigate]
+  );
 
-        // Computed
-        vacantesFiltradas,
-        vacantesAgrupadas,
-        departamentos,
-        stats,
+  return {
+    // State
+    vacantes,
+    loading,
+    error,
+    filtroEstado,
+    busqueda,
+    showDeleteModal,
+    vacanteToDelete,
 
-        // Setters
-        setFiltroEstado,
-        setBusqueda,
+    // Computed
+    vacantesFiltradas,
+    vacantesAgrupadas,
+    departamentos,
+    stats,
 
-        // Actions
-        toggleEstadoVacante,
-        confirmarEliminar,
-        cancelarEliminar,
-        eliminarVacante,
-        copiarEnlace,
-        verVacante,
-        editarVacante,
-        cargarVacantes,
-    };
+    // Setters
+    setFiltroEstado,
+    setBusqueda,
+
+    // Actions
+    publicarVacante,
+    cerrarVacante,
+    confirmarEliminar,
+    cancelarEliminar,
+    eliminarVacante,
+    copiarEnlace,
+    verVacante,
+    editarVacante,
+    cargarVacantes,
+  };
 };
 
 export default useMisVacantes;

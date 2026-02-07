@@ -1,50 +1,62 @@
-import { DEPARTAMENTOS, INPUT_CLASSES, LABEL_CLASSES } from '../constants/vacanteConstants';
+import { INPUT_CLASSES, LABEL_CLASSES } from '../constants/vacanteConstants';
 
 /**
  * Step 1: Basic vacancy information
  * - Title, Department, Description, Responsibilities
  */
-const VacanteStep1 = ({ vacante, setVacante }) => {
-    const updateField = (field, value) => {
-        setVacante({ ...vacante, [field]: value });
-    };
+const VacanteStep1 = ({ vacante, setVacante, departments = [] }) => {
+  const updateField = (field, value) => {
+    setVacante({ ...vacante, [field]: value });
+  };
 
-    return (
-        <div className="space-y-6 flex-1">
-            <div className="border-b border-slate-100 pb-4">
-                <h2 className="text-xl font-bold text-slate-800">Información básica</h2>
-                <p className="text-slate-500 text-sm">Define el título y descripción de la vacante</p>
-            </div>
+  const handleDepartmentChange = (e) => {
+    const selectedId = e.target.value;
+    const selectedDept = departments.find((d) => d.id === selectedId);
+    setVacante({
+      ...vacante,
+      departamentoId: selectedId,
+      departamento: selectedDept?.name || '',
+    });
+  };
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label className={LABEL_CLASSES}>
-                        Título del puesto <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        className={INPUT_CLASSES}
-                        value={vacante.titulo}
-                        onChange={(e) => updateField('titulo', e.target.value)}
-                        placeholder="Ej: Desarrollador Frontend Senior"
-                    />
-                </div>
-                <div>
-                    <label className={LABEL_CLASSES}>
-                        Departamento <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                        className={INPUT_CLASSES}
-                        value={vacante.departamento}
-                        onChange={(e) => updateField('departamento', e.target.value)}
-                    >
-                        <option value="">Seleccionar departamento</option>
-                        {DEPARTAMENTOS.map(dep => (
-                            <option key={dep} value={dep}>{dep}</option>
-                        ))}
-                    </select>
-                </div>
-            </div>
+  return (
+    <div className="space-y-6 flex-1">
+      <div className="border-b border-slate-100 pb-4">
+        <h2 className="text-xl font-bold text-slate-800">Información básica</h2>
+        <p className="text-slate-500 text-sm">Define el título y descripción de la vacante</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className={LABEL_CLASSES}>
+            Título del puesto <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            className={INPUT_CLASSES}
+            value={vacante.titulo}
+            onChange={(e) => updateField('titulo', e.target.value)}
+            placeholder="Ej: Desarrollador Frontend Senior"
+          />
+        </div>
+        <div>
+          <label className={LABEL_CLASSES}>
+            Departamento <span className="text-red-500">*</span>
+          </label>
+          <select
+            className={INPUT_CLASSES}
+            value={vacante.departamentoId}
+            onChange={handleDepartmentChange}
+          >
+            <option value="">Seleccionar departamento</option>
+            {departments.map((dep) => (
+              <option key={dep.id} value={dep.id}>
+                {dep.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
             <div>
                 <label className={LABEL_CLASSES}>

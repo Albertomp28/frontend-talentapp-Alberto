@@ -1,18 +1,42 @@
+/**
+ * DetalleVacante Page
+ * Page for viewing vacancy details.
+ *
+ * @module pages/vacantes/DetalleVacante
+ */
+
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { vacancyService } from '../../services';
 
 const DetalleVacante = () => {
   const { id } = useParams();
   const [vacante, setVacante] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const vacantesGuardadas = JSON.parse(localStorage.getItem('vacantes') || '[]');
-    const vacanteEncontrada = vacantesGuardadas.find(v =>
-      v.id === id || v.id === Number(id) || String(v.id) === id
-    );
-    if (vacanteEncontrada) setVacante(vacanteEncontrada);
-    setLoading(false);
+    const fetchVacante = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const result = await vacancyService.getById(id);
+        if (result.success) {
+          setVacante(result.data);
+        } else {
+          setError(result.error || 'Error al cargar la vacante');
+        }
+      } catch (err) {
+        console.error('Error fetching vacancy:', err);
+        setError('Error al cargar la vacante');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchVacante();
+    }
   }, [id]);
 
   const formatSalario = (min, max) => {
@@ -38,15 +62,15 @@ const DetalleVacante = () => {
     );
   }
 
-  if (!vacante) {
+  if (error || !vacante) {
     return (
       <div className="text-center py-16">
         <svg className="w-16 h-16 text-slate-300 mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
         <h2 className="text-xl font-semibold text-slate-800 mb-2">Vacante no encontrada</h2>
-        <p className="text-slate-500 mb-6">La vacante que buscas no existe o ya no está disponible.</p>
-        <Link to="/dashboard" className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-emerald-500/30 transition-all">Volver al Dashboard</Link>
+        <p className="text-slate-500 mb-6">{error || 'La vacante que buscas no existe o ya no está disponible.'}</p>
+        <Link to="/mis-vacantes" className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-emerald-500/30 transition-all no-underline">Volver a Mis Vacantes</Link>
       </div>
     );
   }
@@ -55,7 +79,7 @@ const DetalleVacante = () => {
     <div className="max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <Link to="/dashboard" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 transition-colors">
+        <Link to="/mis-vacantes" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 transition-colors no-underline">
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
           Volver
         </Link>

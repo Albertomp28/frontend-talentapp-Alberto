@@ -1,25 +1,30 @@
 /**
  * useLogin Hook
  * Custom hook for managing login form state and authentication.
- * 
+ *
  * @module hooks/useLogin
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../services';
+import { authService, storageService } from '../services';
 import { validateLoginCredentials } from '../utils/validators';
 
 /**
  * Custom hook for Login page
  */
 export const useLogin = () => {
-    const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [rememberMe, setRememberMe] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // Limpiar tokens al cargar la página de login
+  useEffect(() => {
+    storageService.clearAll();
+  }, []);
 
     /**
      * Handle form submission

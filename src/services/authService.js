@@ -22,11 +22,16 @@ const login = async (credentials) => {
     }
 
     const response = await apiClient.post('/auth/login', { email, password });
-    const { accessToken, refreshToken, user } = response.data;
+    const data = response.data.data || response.data;
+    const { accessToken, refreshToken } = data;
 
-    // Guardar tokens y usuario en localStorage
+    // Guardar tokens en localStorage
     storageService.setItem(storageService.KEYS.AUTH_TOKEN, accessToken);
     storageService.setItem(storageService.KEYS.REFRESH_TOKEN, refreshToken);
+
+    // Obtener datos del usuario del endpoint /auth/me
+    const userResponse = await apiClient.get('/auth/me');
+    const user = userResponse.data.data || userResponse.data;
     storageService.setItem(storageService.KEYS.USER, user);
 
     return { success: true, user };
@@ -83,7 +88,7 @@ const getCurrentUser = async () => {
   // Si no está en localStorage, obtener del API
   try {
     const response = await apiClient.get('/auth/me');
-    const user = response.data;
+    const user = response.data.data || response.data;
     storageService.setItem(storageService.KEYS.USER, user);
     return user;
   } catch (error) {

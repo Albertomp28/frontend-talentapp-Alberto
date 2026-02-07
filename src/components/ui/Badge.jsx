@@ -74,19 +74,24 @@ export const ScoreBadge = ({ score, size = 'md', className = '' }) => {
  * Status Badge - for vacancy/item statuses
  */
 export const StatusBadge = ({ status, className = '' }) => {
-    const statusConfig = {
-        activa: { variant: 'success', label: 'Activa' },
-        pausada: { variant: 'warning', label: 'Pausada' },
-        cerrada: { variant: 'danger', label: 'Cerrada' },
-    };
+  const statusConfig = {
+    // Backend statuses
+    draft: { variant: 'default', label: 'draft' },
+    published: { variant: 'success', label: 'published' },
+    closed: { variant: 'danger', label: 'closed' },
+    // Legacy statuses
+    activa: { variant: 'success', label: 'Activa' },
+    pausada: { variant: 'warning', label: 'Pausada' },
+    cerrada: { variant: 'danger', label: 'Cerrada' },
+  };
 
-    const config = statusConfig[status] || { variant: 'default', label: status };
+  const config = statusConfig[status] || { variant: 'default', label: status };
 
-    return (
-        <Badge variant={config.variant} className={className}>
-            {config.label}
-        </Badge>
-    );
+  return (
+    <Badge variant={config.variant} className={className}>
+      {config.label}
+    </Badge>
+  );
 };
 
 export default Badge;

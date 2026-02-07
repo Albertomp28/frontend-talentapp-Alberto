@@ -12,23 +12,26 @@ import { formatDate, truncateText } from '../../../utils/formatters';
  * VacanteCard component
  */
 const VacanteCard = ({
-    vacante,
-    onView,
-    onEdit,
-    onCopy,
-    onToggleStatus,
-    onDelete,
+  vacante,
+  onView,
+  onEdit,
+  onCopy,
+  onPublish,
+  onClose,
+  onDelete,
 }) => {
-    const isActive = vacante.estado === 'activa';
+  const isDraft = vacante.estado === 'draft';
+  const isPublished = vacante.estado === 'published';
+  const isClosed = vacante.estado === 'closed';
 
-    return (
-        <div
-            className={`
-        bg-white border rounded-xl p-5 transition-all shadow-sm 
+  return (
+    <div
+      className={`
+        bg-white border rounded-xl p-5 transition-all shadow-sm
         hover:shadow-md hover:border-slate-300
-        ${isActive ? 'border-slate-200' : 'border-slate-200 opacity-75'}
+        ${isClosed ? 'border-slate-200 opacity-60' : 'border-slate-200'}
       `}
-        >
+    >
             {/* Header */}
             <div className="mb-3">
                 <div className="flex items-start justify-between gap-2 mb-2">
@@ -84,37 +87,51 @@ const VacanteCard = ({
                 </div>
             )}
 
-            {/* Actions */}
-            <div className="flex gap-2 pt-3 border-t border-slate-100">
-                <ActionButton
-                    icon={<EyeIcon />}
-                    title="Ver vacante"
-                    onClick={() => onView(vacante.id)}
-                />
-                <ActionButton
-                    icon={<CopyIcon />}
-                    title="Copiar enlace"
-                    onClick={() => onCopy(vacante.id)}
-                />
-                <ActionButton
-                    icon={<EditIcon />}
-                    title="Editar vacante"
-                    onClick={() => onEdit(vacante.id)}
-                />
-                <ActionButton
-                    icon={isActive ? <PauseIcon /> : <PlayIcon />}
-                    title={isActive ? 'Pausar vacante' : 'Activar vacante'}
-                    onClick={() => onToggleStatus(vacante.id)}
-                    className={isActive ? '' : 'text-emerald-500 hover:bg-emerald-50'}
-                />
-                <ActionButton
-                    icon={<TrashIcon />}
-                    title="Eliminar vacante"
-                    onClick={() => onDelete(vacante)}
-                    variant="danger"
-                    className="ml-auto"
-                />
-            </div>
+      {/* Actions */}
+      <div className="flex gap-2 pt-3 border-t border-slate-100">
+        <ActionButton
+          icon={<EyeIcon />}
+          title="Ver vacante"
+          onClick={() => onView(vacante.id)}
+        />
+        <ActionButton
+          icon={<CopyIcon />}
+          title="Copiar enlace"
+          onClick={() => onCopy(vacante.id)}
+        />
+        {!isClosed && (
+          <ActionButton
+            icon={<EditIcon />}
+            title="Editar vacante"
+            onClick={() => onEdit(vacante.id)}
+          />
+        )}
+        {isDraft && (
+          <ActionButton
+            icon={<PlayIcon />}
+            title="Publicar vacante"
+            onClick={() => onPublish(vacante.id)}
+            className="text-emerald-500 hover:bg-emerald-50"
+          />
+        )}
+        {isPublished && (
+          <ActionButton
+            icon={<PauseIcon />}
+            title="Cerrar vacante"
+            onClick={() => onClose(vacante.id)}
+            className="text-orange-500 hover:bg-orange-50"
+          />
+        )}
+        {!isClosed && (
+          <ActionButton
+            icon={<TrashIcon />}
+            title="Eliminar vacante"
+            onClick={() => onDelete(vacante)}
+            variant="danger"
+            className="ml-auto"
+          />
+        )}
+      </div>
         </div>
     );
 };

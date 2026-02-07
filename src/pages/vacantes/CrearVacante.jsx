@@ -31,10 +31,13 @@ const CrearVacante = () => {
     setVacante,
     step,
     loading,
+    saving,
+    error,
     isEditMode,
     showSuccessModal,
     createdVacanteId,
     copied,
+    departments,
     nuevoRequisitoMinimo,
     setNuevoRequisitoMinimo,
     nuevaHabilidadDeseada,
@@ -43,6 +46,7 @@ const CrearVacante = () => {
     setNuevoBeneficio,
     handleNextStep,
     handlePrevStep,
+    goToVacantes,
     agregarRequisitoMinimo,
     eliminarRequisitoMinimo,
     agregarHabilidadDeseada,
@@ -97,9 +101,16 @@ const CrearVacante = () => {
 
           {/* Form Card */}
           <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm min-h-[700px] flex flex-col">
+            {/* Error message */}
+            {error && (
+              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
+                {error}
+              </div>
+            )}
+
             {/* Step Content */}
             {step === 1 && (
-              <VacanteStep1 vacante={vacante} setVacante={setVacante} />
+              <VacanteStep1 vacante={vacante} setVacante={setVacante} departments={departments} />
             )}
 
             {step === 2 && (
@@ -157,12 +168,21 @@ const CrearVacante = () => {
                   type="button"
                   className="flex items-center gap-2 px-8 py-3.5 bg-emerald-600 text-white rounded-xl font-bold text-base shadow-lg hover:shadow-xl hover:bg-emerald-700 transition-all disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none disabled:cursor-not-allowed"
                   onClick={handleSubmit}
-                  disabled={!isStep3Valid}
+                  disabled={!isStep3Valid || saving}
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  {isEditMode ? 'Guardar Cambios' : 'Publicar Vacante'}
+                  {saving ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Guardando...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      {isEditMode ? 'Guardar Cambios' : 'Crear Vacante'}
+                    </>
+                  )}
                 </button>
               )}
             </div>
