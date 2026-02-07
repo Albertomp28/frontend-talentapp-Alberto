@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(cat:*)",
+      "Bash(docker compose up:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(md-to-pdf:*)",
+      "Bash(echo:*)",
+      "Bash(tree:*)",
+      "Bash(du:*)",
+      "Bash(ls:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(curl:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker compose build:*)"
+    ]
+  }
+}

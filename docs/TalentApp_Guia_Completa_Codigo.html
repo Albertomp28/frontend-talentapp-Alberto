@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalentApp - Guia Completa del Codigo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --brand: #3b82f6;
+    --brand-dark: #1d4ed8;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --code-bg: #f8fafc;
+    --accent-bg: #eff6ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.7;
+    font-size: 14px;
+  }
+
+  @media print {
+    body { font-size: 11px; line-height: 1.5; }
+    .page-break { page-break-before: always; }
+    .no-print { display: none !important; }
+    .cover-page { page-break-after: always; }
+    pre { font-size: 9px !important; white-space: pre-wrap !important; word-wrap: break-word !important; }
+    h1, h2, h3 { page-break-after: avoid; }
+    pre, table { page-break-inside: avoid; }
+    .toc { page-break-after: always; }
+  }
+
+  /* Cover Page */
+  .cover-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: white;
+    padding: 60px;
+  }
+
+  .cover-logo {
+    width: 100px; height: 100px;
+    background: linear-gradient(135deg, var(--brand), #6366f1);
+    border-radius: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px; font-weight: 800; color: white;
+    margin-bottom: 40px;
+    box-shadow: 0 20px 60px rgba(59,130,246,0.3);
+  }
+
+  .cover-title { font-size: 48px; font-weight: 800; margin-bottom: 12px; }
+  .cover-subtitle { font-size: 22px; color: #94a3b8; margin-bottom: 40px; }
+  .cover-meta { font-size: 14px; color: #64748b; }
+  .cover-meta span { display: block; margin-bottom: 8px; }
+  .cover-badge {
+    display: inline-block; padding: 8px 20px;
+    background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 999px; color: #93c5fd; font-size: 13px; font-weight: 500;
+    margin-top: 30px;
+  }
+
+  /* Content */
+  .content { max-width: 900px; margin: 0 auto; padding: 40px 30px; }
+
+  /* TOC */
+  .toc { padding: 40px 30px; max-width: 900px; margin: 0 auto; }
+  .toc h1 { font-size: 32px; font-weight: 800; margin-bottom: 30px; color: var(--brand-dark); border-bottom: 3px solid var(--brand); padding-bottom: 12px; }
+  .toc-section { margin-bottom: 20px; }
+  .toc-section h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; padding: 8px 12px; background: var(--accent-bg); border-radius: 8px; border-left: 4px solid var(--brand); }
+  .toc-section ul { list-style: none; padding-left: 20px; }
+  .toc-section li { padding: 4px 0; font-size: 13px; color: var(--text-light); }
+  .toc-section li a { color: var(--brand); text-decoration: none; }
+  .toc-section li a:hover { text-decoration: underline; }
+
+  /* Headings */
+  h1 { font-size: 28px; font-weight: 800; margin: 50px 0 20px; color: var(--text); }
+  h2 { font-size: 22px; font-weight: 700; margin: 40px 0 16px; color: var(--brand-dark); border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+  h3 { font-size: 18px; font-weight: 600; margin: 30px 0 12px; color: var(--text); }
+  h4 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; color: var(--text-light); }
+
+  p { margin-bottom: 12px; color: var(--text); }
+
+  /* Info Box */
+  .info-box {
+    background: var(--accent-bg); border: 1px solid #bfdbfe; border-left: 4px solid var(--brand);
+    border-radius: 8px; padding: 16px 20px; margin: 16px 0;
+  }
+  .info-box.success { background: #ecfdf5; border-color: #a7f3d0; border-left-color: var(--success); }
+  .info-box.warning { background: #fffbeb; border-color: #fde68a; border-left-color: var(--warning); }
+  .info-box.danger { background: #fef2f2; border-color: #fecaca; border-left-color: var(--danger); }
+  .info-box strong { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+
+  /* Code */
+  pre {
+    background: #0f172a; color: #e2e8f0; padding: 20px;
+    border-radius: 10px; overflow-x: auto; margin: 12px 0 20px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6;
+    border: 1px solid #1e293b;
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #e11d48;
+  }
+  pre code { background: none; padding: 0; color: inherit; }
+
+  /* Syntax highlighting */
+  .kw { color: #c084fc; } /* keywords */
+  .str { color: #34d399; } /* strings */
+  .cm { color: #64748b; font-style: italic; } /* comments */
+  .fn { color: #60a5fa; } /* functions */
+  .num { color: #fbbf24; } /* numbers */
+  .tag { color: #f472b6; } /* JSX tags */
+  .attr { color: #a78bfa; } /* attributes */
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  th { background: #f8fafc; font-weight: 600; text-align: left; padding: 10px 14px; border: 1px solid var(--border); }
+  td { padding: 8px 14px; border: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) { background: #fafbfc; }
+
+  /* Architecture diagram */
+  .diagram {
+    background: #f8fafc; border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px; margin: 20px 0;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    white-space: pre; line-height: 1.5; overflow-x: auto; color: var(--text);
+  }
+
+  /* File card */
+  .file-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: 10px; margin: 24px 0; overflow: hidden;
+  }
+  .file-header {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    color: white; padding: 12px 20px; font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .file-header .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .file-header .dot.red { background: #ef4444; }
+  .file-header .dot.yellow { background: #f59e0b; }
+  .file-header .dot.green { background: #10b981; }
+  .file-body { padding: 20px; }
+
+  /* Badge */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .badge.blue { background: #dbeafe; color: #1d4ed8; }
+  .badge.green { background: #d1fae5; color: #065f46; }
+  .badge.orange { background: #fed7aa; color: #c2410c; }
+  .badge.purple { background: #e9d5ff; color: #7c3aed; }
+  .badge.red { background: #fecaca; color: #dc2626; }
+  .badge.gray { background: #f1f5f9; color: #475569; }
+
+  ul, ol { margin: 8px 0 16px 24px; }
+  li { margin-bottom: 4px; }
+
+  hr { border: none; border-top: 2px solid var(--border); margin: 40px 0; }
+
+  .chip {
+    display: inline-block; padding: 4px 12px; margin: 2px;
+    background: #f1f5f9; border-radius: 6px; font-size: 12px; color: var(--text-light);
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== PORTADA ===================== -->
+<div class="cover-page">
+  <div class="cover-logo">T</div>
+  <div class="cover-title">TalentApp</div>
+  <div class="cover-subtitle">Guia Completa del Codigo Fuente</div>
+  <div class="cover-meta">
+    <span>Portal de Reclutamiento con Inteligencia Artificial</span>
+    <span>React 18 + Vite 6 + Tailwind CSS 4</span>
+    <span>Version 1.0.0</span>
+  </div>
+  <div class="cover-badge">Documentacion Tecnica Paso a Paso</div>
+  <div style="margin-top:60px; color:#475569; font-size:13px;">
+    Generado automaticamente &bull; Febrero 2026
+  </div>
+</div>
+
+<!-- ===================== TABLA DE CONTENIDOS ===================== -->
+<div class="toc page-break">
+  <h1>Tabla de Contenidos</h1>
+
+  <div class="toc-section">
+    <h3>1. Vision General del Proyecto</h3>
+    <ul>
+      <li><a href="#sec-overview">1.1 Que es TalentApp</a></li>
+      <li><a href="#sec-tech">1.2 Stack Tecnologico</a></li>
+      <li><a href="#sec-structure">1.3 Estructura de Archivos</a></li>
+      <li><a href="#sec-arch">1.4 Arquitectura de la Aplicacion</a></li>
+    </ul>
+  </div>
+
+  <div class="toc-section">
+    <h3>2. Punto de Entrada y Configuracion</h3>
+    <ul>
+      <li><a href="#sec-index">2.1 index.html - Pagina HTML base</a></li>
+      <li><a href="#sec-main">2.2 main.jsx - Inicializacion de React</a></li>
+      <li><a href="#sec-app">2.3 App.jsx - Componente Raiz</a></li>
+      <li><a href="#sec-config">2.4 Archivos de Configuracion (Vite, Tailwind, PostCSS, Docker)</a></li>
+    </ul>
+  </div>
+
+  <div class="toc-section">
+    <h3>3. Sistema de Rutas</h3>
+    <ul>
+      <li><a href="#sec-router">3.1 AppRouter.jsx - Configuracion de Rutas</a></li>
+      <li><a href="#sec-private">3.2 PrivateRoute.jsx - Proteccion de Rutas</a></li>
+    </ul>
+  </div>
+
+  <div class="toc-section">
+    <h3>4. Capa de Servicios (Logica de Negocio)</h3>
+    <ul>
+      <li><a href="#sec-storage">4.1 storageService.js - Abstraccion de localStorage</a></li>
+      <li><a href="#sec-auth">4.2 authService.js - Autenticacion</a></li>
+      <li><a href="#sec-vacancy">4.3 vacancyService.js - CRUD de Vacantes</a></li>
+      <li><a href="#sec-candidate">4.4 candidateService.js - Pool de Candidatos</a></li>
+    </ul>
+  </div>
+
+  <div class="toc-section">
+    <h3>5. Layout Principal</h3>
+    <ul>
+      <li><a href="#sec-dashboard-layout">5.1 DashboardLayout.jsx - Estructura de Pagina</a></li>
+      <li><a href="#sec-sidebar">5.2 Sidebar.jsx - Navegacion Lateral</a></li>
+      <li><a href="#sec-header">5.3 Header.jsx - Barra Superior</a></li>
+      <li><a href="#sec-usermenu">5.4 UserMenu.jsx - Menu de Usuario</a></li>
+    </ul>
+  </div>
+
+  <div class="toc-section">
+    <h3>6. Componentes UI Reutilizables</h3>
+    <ul>
+      <li><a href="#sec-ui">6.1 Avatar, Badge, Button, Card, Modal, SearchInput</a></li>
+    </ul>
+  </div>
+
+  <div class="toc-section">
+    <h3>7. Paginas y Funcionalidades</h3>
+    <ul>
+      <li><a href="#sec-login">7.1 Login - Autenticacion</a></li>
+      <li><a href="#sec-kanban">7.2 Dashboard / KanbanBoard - Pipeline de Reclutamiento</a></li>
+      <li><a href="#sec-vacantes">7.3 Vacantes - Gestion de Puestos</a></li>
+      <li><a href="#sec-pool">7.4 Remanente - Pool de Candidatos</a></li>
+      <li><a href="#sec-perfil">7.5 PerfilCandidato - Vista de Candidato</a></li>
+    </ul>
+  </div>
+
+  <div class="toc-section">
+    <h3>8. Hooks Personalizados</h3>
+    <ul>
+      <li><a href="#sec-hooks">8.1 useLogin, useRemanente, useKanbanBoard, useMisVacantes, useVacanteForm</a></li>
+    </ul>
+  </div>
+
+  <div class="toc-section">
+    <h3>9. Utilidades y Constantes</h3>
+    <ul>
+      <li><a href="#sec-utils">9.1 formatters.js y validators.js</a></li>
+      <li><a href="#sec-constants">9.2 Constantes (menu, pipeline, kanban, vacantes)</a></li>
+    </ul>
+  </div>
+
+  <div class="toc-section">
+    <h3>10. Estilos y Sistema de Diseno</h3>
+    <ul>
+      <li><a href="#sec-styles">10.1 App.css - Tokens de Diseno y Clases Globales</a></li>
+    </ul>
+  </div>
+
+  <div class="toc-section">
+    <h3>11. Despliegue (Docker y Nginx)</h3>
+    <ul>
+      <li><a href="#sec-deploy">11.1 Dockerfile, docker-compose.yml, nginx.conf</a></li>
+    </ul>
+  </div>
+
+  <div class="toc-section">
+    <h3>12. Mapa de Datos y Modelos</h3>
+    <ul>
+      <li><a href="#sec-models">12.1 Estructura de datos de Vacantes, Candidatos y Autenticacion</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+<div class="content">
+
+<!-- ========== SECCION 1 ========== -->
+<h1 class="page-break" id="sec-overview">1. Vision General del Proyecto</h1>
+
+<p><strong>TalentApp</strong> es una plataforma web moderna de reclutamiento construida con React. Permite a los reclutadores gestionar vacantes laborales, analizar CVs con simulacion de inteligencia artificial y administrar un pipeline de contratacion visual tipo Kanban.</p>
+
+<div class="info-box">
+  <strong>Funcionalidades Principales:</strong>
+  <ul>
+    <li><strong>Autenticacion:</strong> Sistema de login simulado con tokens en localStorage</li>
+    <li><strong>Tablero Kanban:</strong> Pipeline visual de reclutamiento con drag-and-drop nativo</li>
+    <li><strong>Gestion de Vacantes:</strong> Crear, editar, pausar y eliminar vacantes con formulario de 3 pasos</li>
+    <li><strong>Analisis de CV:</strong> Subida de CV con simulacion de analisis IA (scores aleatorios)</li>
+    <li><strong>Pool de Candidatos:</strong> Base de candidatos previamente evaluados con filtros</li>
+  </ul>
+</div>
+
+<h2 id="sec-tech">1.2 Stack Tecnologico</h2>
+
+<table>
+  <tr><th>Tecnologia</th><th>Version</th><th>Proposito</th></tr>
+  <tr><td>React</td><td>18.3.1</td><td>Framework de UI (biblioteca principal)</td></tr>
+  <tr><td>React Router DOM</td><td>6.28.0</td><td>Enrutamiento del lado del cliente (SPA)</td></tr>
+  <tr><td>Vite</td><td>6.0.1</td><td>Bundler y servidor de desarrollo ultrarapido</td></tr>
+  <tr><td>Tailwind CSS</td><td>4.1.18</td><td>Framework de utilidades CSS</td></tr>
+  <tr><td>PostCSS</td><td>8.5.6</td><td>Procesador de CSS</td></tr>
+  <tr><td>Node.js</td><td>20 (Alpine)</td><td>Entorno de ejecucion para build</td></tr>
+  <tr><td>Nginx</td><td>Alpine</td><td>Servidor web para produccion</td></tr>
+  <tr><td>Docker</td><td>Multi-stage</td><td>Contenerizacion</td></tr>
+</table>
+
+<h2 id="sec-structure">1.3 Estructura de Archivos</h2>
+
+<div class="diagram">talent-fronted/
+├── index.html                    # Pagina HTML base
+├── package.json                  # Dependencias del proyecto
+├── vite.config.js                # Configuracion de Vite
+├── tailwind.config.js            # Configuracion de Tailwind CSS
+├── postcss.config.js             # Configuracion de PostCSS
+├── Dockerfile                    # Imagen Docker multi-etapa
+├── docker-compose.yml            # Orquestacion Docker
+├── nginx.conf                    # Servidor web para produccion
+│
+└── src/
+    ├── main.jsx                  # Punto de entrada de React
+    ├── App.jsx                   # Componente raiz
+    ├── styles/App.css            # Estilos globales + tokens de diseno
+    │
+    ├── router/                   # SISTEMA DE RUTAS
+    │   ├── AppRouter.jsx         #   Definicion de todas las rutas
+    │   └── PrivateRoute.jsx      #   Proteccion de rutas privadas
+    │
+    ├── services/                 # CAPA DE SERVICIOS (logica de negocio)
+    │   ├── index.js              #   Exportaciones centrales
+    │   ├── storageService.js     #   Abstraccion de localStorage
+    │   ├── authService.js        #   Autenticacion (login/logout)
+    │   ├── vacancyService.js     #   CRUD de vacantes
+    │   └── candidateService.js   #   Gestion del pool de candidatos
+    │
+    ├── layouts/                  # LAYOUT PRINCIPAL
+    │   ├── DashboardLayout.jsx   #   Estructura: sidebar + header + contenido
+    │   └── components/
+    │       ├── Sidebar.jsx       #   Barra de navegacion lateral
+    │       ├── Header.jsx        #   Barra superior (busqueda, notificaciones)
+    │       └── UserMenu.jsx      #   Menu desplegable del usuario
+    │
+    ├── components/               # COMPONENTES REUTILIZABLES
+    │   ├── ui/                   #   Libreria de componentes base
+    │   │   ├── Avatar.jsx        #     Avatar con iniciales o imagen
+    │   │   ├── Badge.jsx         #     Etiquetas de estado/puntaje
+    │   │   ├── Button.jsx        #     Boton con variantes
+    │   │   ├── Card.jsx          #     Tarjeta contenedora
+    │   │   ├── Modal.jsx         #     Dialogo modal
+    │   │   └── SearchInput.jsx   #     Campo de busqueda
+    │   └── candidates/
+    │       └── CandidatePoolCard.jsx  # Tarjeta de candidato en pool
+    │
+    ├── pages/                    # PAGINAS
+    │   ├── Login.jsx             #   Pagina de inicio de sesion
+    │   ├── Dashboard.jsx         #   Dashboard (wrapper del Kanban)
+    │   ├── NotFound.jsx          #   Pagina 404
+    │   ├── Remanente.jsx         #   Pool de candidatos
+    │   │
+    │   ├── kanban/               #   MODULO KANBAN
+    │   │   ├── KanbanBoard.jsx   #     Tablero principal
+    │   │   ├── hooks/useKanbanBoard.js    # Logica del tablero
+    │   │   ├── constants/kanbanConstants.js # Datos mock
+    │   │   └── components/
+    │   │       ├── KanbanColumn.jsx          # Columna del tablero
+    │   │       ├── KanbanCandidateCard.jsx   # Tarjeta arrastrable
+    │   │       ├── CandidateDetailModal.jsx  # Modal de detalle
+    │   │       └── CVUploadModal.jsx         # Modal de carga de CV
+    │   │
+    │   ├── vacantes/             #   MODULO VACANTES
+    │   │   ├── MisVacantes.jsx   #     Lista de vacantes
+    │   │   ├── CrearVacante.jsx  #     Formulario crear/editar
+    │   │   ├── DetalleVacante.jsx#     Vista de detalle
+    │   │   ├── hooks/            #     Logica de estado
+    │   │   ├── constants/        #     Configuracion del formulario
+    │   │   └── components/       #     10 subcomponentes
+    │   │
+    │   └── candidatos/
+    │       └── PerfilCandidato.jsx  # Perfil detallado de candidato
+    │
+    ├── hooks/                    # HOOKS GLOBALES
+    │   ├── useLogin.js           #   Estado del formulario de login
+    │   └── useRemanente.js       #   Estado del pool de candidatos
+    │
+    ├── constants/                # CONSTANTES GLOBALES
+    │   ├── menuConstants.js      #   Items del menu y filtros
+    │   └── pipelineConstants.js  #   Columnas del pipeline
+    │
+    └── utils/                    # UTILIDADES
+        ├── formatters.js         #   Formateo de fechas, texto, puntajes
+        └── validators.js         #   Validacion de formularios
+</div>
+
+<h2 id="sec-arch">1.4 Arquitectura de la Aplicacion</h2>
+
+<p>TalentApp sigue una arquitectura <strong>modular basada en features</strong> (modulos por funcionalidad). Cada modulo contiene sus propios componentes, hooks y constantes. La comunicacion entre capas es unidireccional:</p>
+
+<div class="diagram">
+                    ┌──────────────────────────────┐
+                    │         NAVEGADOR            │
+                    │   (localStorage como DB)     │
+                    └──────────────┬───────────────┘
+                                   │
+                    ┌──────────────▼───────────────┐
+                    │     index.html + main.jsx    │
+                    │     (Punto de entrada)        │
+                    └──────────────┬───────────────┘
+                                   │
+                    ┌──────────────▼───────────────┐
+                    │         App.jsx              │
+                    │    (Componente raiz)          │
+                    └──────────────┬───────────────┘
+                                   │
+                    ┌──────────────▼───────────────┐
+                    │       AppRouter.jsx           │
+                    │  (Configuracion de rutas)     │
+                    └──────────────┬───────────────┘
+                                   │
+              ┌────────────────────┼────────────────────┐
+              │                    │                    │
+    ┌─────────▼──────────┐ ┌──────▼──────────┐ ┌──────▼──────────┐
+    │    /login           │ │  PrivateRoute   │ │     /404        │
+    │    Login.jsx        │ │  (verifica      │ │   NotFound.jsx  │
+    │                     │ │   auth_token)   │ │                 │
+    └─────────────────────┘ └──────┬──────────┘ └─────────────────┘
+                                   │
+                    ┌──────────────▼───────────────┐
+                    │     DashboardLayout           │
+                    │  ┌─────────┐ ┌────────────┐  │
+                    │  │ Sidebar │ │   Header   │  │
+                    │  │  (nav)  │ │ (busqueda) │  │
+                    │  └─────────┘ └────────────┘  │
+                    │  ┌─────────────────────────┐ │
+                    │  │    &lt;Outlet /&gt;           │ │
+                    │  │  (pagina actual)        │ │
+                    │  └─────────────────────────┘ │
+                    └──────────────────────────────┘
+                                   │
+         ┌─────────────┬───────────┼───────────┬──────────────┐
+         │             │           │           │              │
+    ┌────▼────┐  ┌─────▼─────┐ ┌──▼────┐ ┌───▼─────┐ ┌──────▼──────┐
+    │Dashboard│  │ MisVac.   │ │ Crear │ │Detalle  │ │ Remanente   │
+    │(Kanban) │  │(lista)    │ │Vacante│ │Vacante  │ │(pool cand.) │
+    └────┬────┘  └─────┬─────┘ └──┬────┘ └───┬─────┘ └──────┬──────┘
+         │             │          │           │              │
+    ┌────▼────┐  ┌─────▼─────┐ ┌──▼────┐     │        ┌─────▼──────┐
+    │useKanban│  │useMisVac. │ │useVac.│     │        │useRemanente│
+    │Board    │  │           │ │Form   │     │        │            │
+    └────┬────┘  └─────┬─────┘ └──┬────┘     │        └─────┬──────┘
+         │             │          │           │              │
+    ┌────▼─────────────▼──────────▼───────────▼──────────────▼──────┐
+    │                    CAPA DE SERVICIOS                          │
+    │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────┐ │
+    │  │authServ. │  │vacancyS. │  │candidateS│  │storageService│ │
+    │  └──────────┘  └──────────┘  └──────────┘  └──────┬───────┘ │
+    └───────────────────────────────────────────────────┬──────────┘
+                                                        │
+                                              ┌─────────▼─────────┐
+                                              │   localStorage    │
+                                              │  (almacenamiento  │
+                                              │   del navegador)  │
+                                              └───────────────────┘
+</div>
+
+<div class="info-box success">
+  <strong>Patron de diseno clave:</strong>
+  Cada pagina utiliza un <strong>Custom Hook</strong> que encapsula toda la logica de estado y efectos secundarios, manteniendo los componentes de presentacion limpios y enfocados solo en el renderizado. Los servicios actuan como intermediarios entre los hooks y el almacenamiento (localStorage).
+</div>
+
+<hr>
+
+<!-- ========== SECCION 2 ========== -->
+<h1 class="page-break" id="sec-index">2. Punto de Entrada y Configuracion</h1>
+
+<h2>2.1 index.html - Pagina HTML Base</h2>
+<p>Este es el archivo HTML que el navegador carga primero. Define la estructura minima con un <code>&lt;div id="root"&gt;</code> donde React montara toda la aplicacion.</p>
+
+<div class="file-card">
+  <div class="file-header">
+    <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    index.html
+  </div>
+  <div class="file-body">
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="es"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;TalentApp - Portal de Reclutamiento&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="root"&gt;&lt;/div&gt;          &lt;!-- React se monta aqui --&gt;
+    &lt;script type="module" src="/src/main.jsx"&gt;&lt;/script&gt;  &lt;!-- Carga el JS --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+  </div>
+</div>
+
+<div class="info-box">
+  <strong>Que hace cada linea:</strong>
+  <ul>
+    <li><code>lang="es"</code> - Indica que el contenido esta en espanol</li>
+    <li><code>&lt;div id="root"&gt;</code> - Contenedor vacio donde React inyecta toda la UI</li>
+    <li><code>type="module"</code> - Carga el JavaScript como modulo ES6 (permite import/export)</li>
+  </ul>
+</div>
+
+<h2 id="sec-main">2.2 main.jsx - Inicializacion de React</h2>
+<p>Este archivo es el primer JavaScript que se ejecuta. Su unica funcion es crear la raiz de React y montar el componente <code>App</code>.</p>
+
+<div class="file-card">
+  <div class="file-header">
+    <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    src/main.jsx
+  </div>
+  <div class="file-body">
+<pre><code>import { StrictMode } from 'react'       // Modo estricto de React
+import { createRoot } from 'react-dom/client'  // API moderna de React 18
+import App from './App.jsx'               // Componente raiz
+
+// Busca el div#root en index.html y monta React ahi
+createRoot(document.getElementById('root')).render(
+  &lt;StrictMode&gt;    {/* Activa verificaciones extra en desarrollo */}
+    &lt;App /&gt;       {/* Renderiza toda la aplicacion */}
+  &lt;/StrictMode&gt;
+)</code></pre>
+  </div>
+</div>
+
+<div class="info-box">
+  <strong>StrictMode:</strong> Solo actua en desarrollo. Ejecuta los componentes dos veces para detectar efectos secundarios impuros, ayudando a encontrar bugs temprano. No afecta produccion.
+</div>
+
+<h2 id="sec-app">2.3 App.jsx - Componente Raiz</h2>
+<p>El componente mas simple: importa el router y los estilos globales. Todo el resto de la aplicacion se carga a traves de <code>AppRouter</code>.</p>
+
+<div class="file-card">
+  <div class="file-header">
+    <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    src/App.jsx
+  </div>
+  <div class="file-body">
+<pre><code>import AppRouter from './router/AppRouter';  // Sistema de rutas
+import './styles/App.css';                    // Estilos globales de Tailwind
+
+function App() {
+  return &lt;AppRouter /&gt;;  // Delega TODO al sistema de rutas
+}
+
+export default App;</code></pre>
+  </div>
+</div>
+
+<h2 id="sec-config">2.4 Archivos de Configuracion</h2>
+
+<h3>vite.config.js</h3>
+<p>Configura Vite (el bundler) para soportar React y escuchar en todas las interfaces de red (necesario para Docker).</p>
+<pre><code>import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],        // Habilita JSX, Fast Refresh, etc.
+  server: {
+    host: '0.0.0.0',         // Escucha en todas las interfaces (Docker)
+    port: 5173,              // Puerto de desarrollo
+    watch: { usePolling: true }  // Polling para hot-reload en Docker/WSL
+  }
+})</code></pre>
+
+<h3>tailwind.config.js</h3>
+<p>Define colores personalizados, fuentes y sombras para todo el sistema de diseno de TalentApp.</p>
+<pre><code>export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],  // Archivos a escanear
+  theme: {
+    extend: {
+      colors: {
+        light: { bg: '#f8fafc', card: '#ffffff', hover: '#f1f5f9' },
+        accent: { blue: '#3b82f6', green: '#10b981', red: '#ef4444' }
+        // ... mas colores personalizados
+      },
+      fontFamily: { sans: ['Inter', ...] },
+      boxShadow: {
+        'card': '0 1px 3px rgba(0,0,0,0.05)',
+        'card-hover': '0 4px 12px rgba(0,0,0,0.08)',
+        'modal': '0 25px 50px -12px rgba(0,0,0,0.15)'
+      }
+    }
+  }
+}</code></pre>
+
+<h3>postcss.config.js</h3>
+<p>Conecta Tailwind CSS y Autoprefixer al proceso de compilacion de CSS.</p>
+<pre><code>export default {
+  plugins: {
+    '@tailwindcss/postcss': {},  // Procesa las directivas de Tailwind
+    autoprefixer: {},            // Agrega prefijos de navegador automaticamente
+  }
+}</code></pre>
+
+<hr>
+
+<!-- ========== SECCION 3 ========== -->
+<h1 class="page-break" id="sec-router">3. Sistema de Rutas</h1>
+
+<h2>3.1 AppRouter.jsx - Configuracion de Rutas</h2>
+
+<p>Este archivo define <strong>todas las URLs</strong> de la aplicacion y que componente se muestra en cada una. Es el "mapa" de navegacion.</p>
+
+<div class="info-box">
+  <strong>Concepto clave - React Router:</strong>
+  React Router permite crear aplicaciones de una sola pagina (SPA) donde la navegacion ocurre sin recargar el navegador. Cada <code>&lt;Route&gt;</code> asocia una URL con un componente.
+</div>
+
+<table>
+  <tr><th>Ruta</th><th>Componente</th><th>Protegida</th><th>Descripcion</th></tr>
+  <tr><td><code>/login</code></td><td>Login</td><td>No</td><td>Pagina de inicio de sesion</td></tr>
+  <tr><td><code>/</code></td><td>Redirect</td><td>Si</td><td>Redirige a /dashboard</td></tr>
+  <tr><td><code>/dashboard</code></td><td>Dashboard (KanbanBoard)</td><td>Si</td><td>Tablero Kanban principal</td></tr>
+  <tr><td><code>/mis-vacantes</code></td><td>MisVacantes</td><td>Si</td><td>Lista de vacantes creadas</td></tr>
+  <tr><td><code>/vacantes/crear</code></td><td>CrearVacante</td><td>Si</td><td>Formulario de nueva vacante</td></tr>
+  <tr><td><code>/vacantes/editar/:id</code></td><td>CrearVacante</td><td>Si</td><td>Editar vacante existente</td></tr>
+  <tr><td><code>/vacantes/:id</code></td><td>DetalleVacante</td><td>Si</td><td>Vista de detalle de vacante</td></tr>
+  <tr><td><code>/candidatos/:id</code></td><td>PerfilCandidato</td><td>Si</td><td>Perfil de candidato</td></tr>
+  <tr><td><code>/remanente</code></td><td>Remanente</td><td>Si</td><td>Pool de candidatos</td></tr>
+  <tr><td><code>*</code></td><td>NotFound</td><td>No</td><td>Pagina 404</td></tr>
+</table>
+
+<h3>Flujo de navegacion:</h3>
+<div class="diagram">
+Usuario abre la app
+      │
+      ▼
+  ¿Esta en /login?
+      │
+  SI ─┤── Muestra formulario de login
+      │       │
+  NO ─┤       ▼
+      │   Login exitoso → navega a /dashboard
+      │
+      ▼
+  PrivateRoute verifica:
+  ¿Existe 'auth_token' en localStorage?
+      │
+  NO ─┤── Redirige a /login (guarda URL original)
+      │
+  SI ─┤── Muestra DashboardLayout
+      │       │
+      │       ├── Sidebar (siempre visible)
+      │       ├── Header (siempre visible)
+      │       └── Outlet → Pagina segun la ruta
+      │
+      ▼
+  Pagina renderizada dentro del layout
+</div>
+
+<h2 id="sec-private">3.2 PrivateRoute.jsx - Proteccion de Rutas</h2>
+
+<p>Este componente actua como un <strong>"guardian"</strong>. Envuelve las rutas que requieren autenticacion y verifica que exista un token valido antes de permitir el acceso.</p>
+
+<div class="file-card">
+  <div class="file-header">
+    <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    src/router/PrivateRoute.jsx
+  </div>
+  <div class="file-body">
+<pre><code>import { Navigate, useLocation } from 'react-router-dom';
+
+const PrivateRoute = ({ children }) => {
+  const location = useLocation();  // Obtiene la URL actual
+
+  // Verifica si hay token de autenticacion
+  const getToken = () => localStorage.getItem('auth_token');
+  const isAuthenticated = !!getToken();  // Convierte a booleano
+
+  if (!isAuthenticated) {
+    // Redirige a /login guardando la URL original
+    // Asi despues del login puede volver a donde estaba
+    return &lt;Navigate to="/login" state={{ from: location }} replace /&gt;;
+  }
+
+  return children;  // Si esta autenticado, muestra el contenido
+};</code></pre>
+  </div>
+</div>
+
+<div class="info-box warning">
+  <strong>Nota importante:</strong>
+  Actualmente la autenticacion es simulada. Cualquier email/password funciona porque el backend aun no esta implementado. El token se genera localmente con <code>Date.now()</code>. En produccion, esto se reemplazaria por llamadas a una API real con JWT.
+</div>
+
+<hr>
+
+<!-- ========== SECCION 4 ========== -->
+<h1 class="page-break" id="sec-storage">4. Capa de Servicios</h1>
+
+<p>Los servicios son la <strong>capa de logica de negocio</strong>. Actuan como intermediarios entre los componentes/hooks y el almacenamiento de datos. Esto permite cambiar facilmente de localStorage a una API real sin modificar los componentes.</p>
+
+<div class="diagram">
+  Componentes (UI)
+       │
+       ▼
+  Custom Hooks (estado + logica)
+       │
+       ▼
+  Servicios (logica de negocio)      ← Esta capa
+       │
+       ▼
+  storageService (acceso a datos)
+       │
+       ▼
+  localStorage (almacenamiento)
+</div>
+
+<h2>4.1 storageService.js - Abstraccion de localStorage</h2>
+<p>Envuelve las operaciones de <code>localStorage</code> con manejo de errores y serializacion JSON automatica. Define las claves usadas en toda la app.</p>
+
+<div class="info-box">
+  <strong>Claves de almacenamiento:</strong>
+  <ul>
+    <li><code>auth_token</code> - Token de autenticacion del usuario</li>
+    <li><code>vacantes</code> - Array de todas las vacantes creadas</li>
+    <li><code>poolCandidatos</code> - Array de candidatos agregados al pool</li>
+  </ul>
+</div>
+
+<p><strong>Metodos disponibles:</strong></p>
+<table>
+  <tr><th>Metodo</th><th>Que hace</th></tr>
+  <tr><td><code>getItem(key, default)</code></td><td>Lee y parsea un valor de localStorage. Si no existe, retorna el default.</td></tr>
+  <tr><td><code>setItem(key, value)</code></td><td>Serializa a JSON y guarda en localStorage.</td></tr>
+  <tr><td><code>removeItem(key)</code></td><td>Elimina una clave de localStorage.</td></tr>
+  <tr><td><code>clearAll()</code></td><td>Elimina todas las claves de la app (no todo el localStorage).</td></tr>
+</table>
+
+<h2 id="sec-auth">4.2 authService.js - Autenticacion</h2>
+<p>Maneja el ciclo de vida de la sesion del usuario: login, logout, verificacion de autenticacion y obtencion de datos del usuario.</p>
+
+<table>
+  <tr><th>Metodo</th><th>Que hace</th></tr>
+  <tr><td><code>login({email, password})</code></td><td>Simula autenticacion. Genera token aleatorio y lo guarda. Retorna <code>{success, token}</code>.</td></tr>
+  <tr><td><code>logout()</code></td><td>Elimina el token de localStorage.</td></tr>
+  <tr><td><code>isAuthenticated()</code></td><td>Retorna <code>true</code> si existe un token.</td></tr>
+  <tr><td><code>getToken()</code></td><td>Retorna el token actual o <code>null</code>.</td></tr>
+  <tr><td><code>getCurrentUser()</code></td><td>Retorna datos mock del usuario (nombre: "Administrador").</td></tr>
+</table>
+
+<h2 id="sec-vacancy">4.3 vacancyService.js - CRUD de Vacantes</h2>
+<p>Operaciones completas de Crear, Leer, Actualizar y Eliminar vacantes. Cada operacion lee/escribe en localStorage.</p>
+
+<table>
+  <tr><th>Metodo</th><th>Que hace</th></tr>
+  <tr><td><code>getAll()</code></td><td>Retorna todas las vacantes guardadas</td></tr>
+  <tr><td><code>getById(id)</code></td><td>Busca una vacante por ID</td></tr>
+  <tr><td><code>create(data)</code></td><td>Crea vacante con ID unico (timestamp), fecha de creacion y estado "activa"</td></tr>
+  <tr><td><code>update(id, updates)</code></td><td>Actualiza campos de una vacante existente</td></tr>
+  <tr><td><code>remove(id)</code></td><td>Elimina una vacante por ID</td></tr>
+  <tr><td><code>toggleStatus(id)</code></td><td>Alterna entre "activa" y "pausada"</td></tr>
+  <tr><td><code>groupByDepartment()</code></td><td>Agrupa vacantes por departamento</td></tr>
+  <tr><td><code>getStats()</code></td><td>Retorna conteo total, activas, pausadas y cerradas</td></tr>
+</table>
+
+<h2 id="sec-candidate">4.4 candidateService.js - Pool de Candidatos</h2>
+<p>Gestiona el pool de candidatos. Incluye 6 candidatos de ejemplo precargados y funciones de filtrado.</p>
+
+<div class="info-box">
+  <strong>Candidatos de ejemplo incluidos:</strong>
+  Ana Martinez (Python), Roberto Sanchez (Java), Laura Torres (React), Diego Ramirez (DevOps), Carmen Vega (Node.js), Fernando Luna (Flutter). Cada uno con habilidades, experiencia, ubicacion y score.
+</div>
+
+<table>
+  <tr><th>Metodo</th><th>Que hace</th></tr>
+  <tr><td><code>getFromPool()</code></td><td>Retorna candidatos de ejemplo + guardados (sin duplicados)</td></tr>
+  <tr><td><code>addToPool(candidate)</code></td><td>Agrega nuevo candidato al pool</td></tr>
+  <tr><td><code>filterCandidates({busqueda, habilidad, experiencia})</code></td><td>Filtra por nombre/email, habilidad y nivel de experiencia</td></tr>
+  <tr><td><code>getStats()</code></td><td>Total de candidatos, disponibles inmediatamente y promedio de score</td></tr>
+</table>
+
+<hr>
+
+<!-- ========== SECCION 5 ========== -->
+<h1 class="page-break" id="sec-dashboard-layout">5. Layout Principal</h1>
+
+<h2>5.1 DashboardLayout.jsx</h2>
+<p>Es la estructura visual que envuelve todas las paginas autenticadas. Divide la pantalla en tres areas:</p>
+
+<div class="diagram">
+┌────────────────────────────────────────────────────────┐
+│                        PANTALLA                        │
+│  ┌──────────┐  ┌────────────────────────────────────┐  │
+│  │          │  │          HEADER                    │  │
+│  │          │  │  [Busqueda]  [Notif] [Msgs] [User] │  │
+│  │ SIDEBAR  │  ├────────────────────────────────────┤  │
+│  │          │  │                                    │  │
+│  │ [Logo]   │  │          CONTENIDO                 │  │
+│  │ [Menu]   │  │          &lt;Outlet /&gt;                │  │
+│  │ [Ayuda]  │  │    (aqui se renderiza la pagina    │  │
+│  │ [v1.0.0] │  │     segun la ruta actual)          │  │
+│  │          │  │                                    │  │
+│  │  264px   │  │          Resto del ancho           │  │
+│  └──────────┘  └────────────────────────────────────┘  │
+└────────────────────────────────────────────────────────┘
+</div>
+
+<pre><code>const DashboardLayout = () => {
+  return (
+    &lt;div className="flex min-h-screen"&gt;
+      &lt;Sidebar /&gt;          {/* Barra lateral fija de 264px */}
+      &lt;div className="app-main"&gt;
+        &lt;Header /&gt;          {/* Barra superior sticky */}
+        &lt;main className="flex-1 p-6"&gt;
+          &lt;Outlet /&gt;        {/* Aqui React Router inyecta la pagina */}
+        &lt;/main&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h2 id="sec-sidebar">5.2 Sidebar.jsx</h2>
+<p>Barra de navegacion lateral fija. Contiene el logo, 4 enlaces de menu, seccion de ayuda y numero de version. El enlace activo se resalta con un gradiente azul.</p>
+
+<p><strong>Items del menu:</strong></p>
+<table>
+  <tr><th>Icono</th><th>Label</th><th>Ruta</th></tr>
+  <tr><td>Grid</td><td>Dashboard</td><td>/dashboard</td></tr>
+  <tr><td>Circulo +</td><td>Nueva Vacante</td><td>/vacantes/crear</td></tr>
+  <tr><td>Maletin</td><td>Mis Vacantes</td><td>/mis-vacantes</td></tr>
+  <tr><td>Personas</td><td>Pool de Candidatos</td><td>/remanente</td></tr>
+</table>
+
+<h2 id="sec-header">5.3 Header.jsx</h2>
+<p>Barra superior con busqueda global, iconos de notificaciones y mensajes, y el menu de usuario. Se mantiene fija arriba (<code>sticky top-0</code>) con efecto de vidrio (<code>backdrop-blur</code>).</p>
+
+<h2 id="sec-usermenu">5.4 UserMenu.jsx</h2>
+<p>Menu desplegable que aparece al hacer clic en el avatar del usuario. Muestra informacion del usuario (mock), opciones de perfil/configuracion, y boton de cerrar sesion que llama a <code>authService.logout()</code>.</p>
+
+<hr>
+
+<!-- ========== SECCION 6 ========== -->
+<h1 class="page-break" id="sec-ui">6. Componentes UI Reutilizables</h1>
+
+<p>La carpeta <code>src/components/ui/</code> contiene una mini-libreria de componentes base reutilizables en toda la aplicacion:</p>
+
+<table>
+  <tr><th>Componente</th><th>Proposito</th><th>Props principales</th></tr>
+  <tr>
+    <td><strong>Avatar</strong></td>
+    <td>Muestra iniciales del nombre sobre un circulo con gradiente, o una imagen</td>
+    <td><code>name</code>, <code>src</code>, <code>size</code> (xs/sm/md/lg/xl)</td>
+  </tr>
+  <tr>
+    <td><strong>Badge</strong></td>
+    <td>Etiqueta de estado o puntaje. Incluye <code>ScoreBadge</code> (colores por score) y <code>StatusBadge</code> (activa/pausada/cerrada)</td>
+    <td><code>variant</code> (success/warning/danger), <code>size</code></td>
+  </tr>
+  <tr>
+    <td><strong>Button</strong></td>
+    <td>Boton con 6 variantes visuales y 4 tamanos. Incluye <code>IconButton</code></td>
+    <td><code>variant</code> (primary/secondary/success/danger/ghost/link), <code>size</code>, <code>icon</code></td>
+  </tr>
+  <tr>
+    <td><strong>Card</strong></td>
+    <td>Contenedor con borde, sombra y esquinas redondeadas. Incluye <code>CardHeader</code>, <code>CardBody</code>, <code>CardFooter</code>, <code>StatCard</code></td>
+    <td><code>padding</code>, <code>hover</code>, <code>onClick</code></td>
+  </tr>
+  <tr>
+    <td><strong>Modal</strong></td>
+    <td>Dialogo centrado con fondo oscuro. Se cierra al hacer clic fuera. Incluye <code>ModalHeader</code>, <code>ModalBody</code>, <code>ModalFooter</code>, <code>ConfirmModal</code></td>
+    <td><code>show</code>, <code>onClose</code>, <code>maxWidth</code></td>
+  </tr>
+  <tr>
+    <td><strong>SearchInput</strong></td>
+    <td>Campo de busqueda con icono de lupa y boton para limpiar</td>
+    <td><code>value</code>, <code>onChange</code>, <code>placeholder</code></td>
+  </tr>
+</table>
+
+<div class="info-box success">
+  <strong>Patron de diseno:</strong>
+  Todos los componentes UI son <strong>controlados</strong> (el estado vive en el padre) y <strong>composicionales</strong> (se pueden combinar libremente). Usan los tokens de diseno definidos en App.css para mantener consistencia visual.
+</div>
+
+<hr>
+
+<!-- ========== SECCION 7 ========== -->
+<h1 class="page-break" id="sec-login">7. Paginas y Funcionalidades</h1>
+
+<h2>7.1 Login.jsx - Pagina de Autenticacion</h2>
+
+<p>Pagina completa de inicio de sesion con formulario de email/password, checkbox "Recordarme" y enlace "Olvidaste tu contrasena". Usa el hook <code>useLogin</code> para toda la logica.</p>
+
+<div class="diagram">
+┌─────────────────────────────────────┐
+│          Login Page                 │
+│                                     │
+│        ┌───────┐                    │
+│        │   T   │  Logo              │
+│        └───────┘                    │
+│       TalentApp                     │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │  Iniciar Sesion             │    │
+│  │                             │    │
+│  │  Email: [____________]      │    │
+│  │  Password: [__________]     │    │
+│  │                             │    │
+│  │  [✓] Recordarme   Olvide?  │    │
+│  │                             │    │
+│  │  [=== Iniciar Sesion ===]   │    │
+│  │                             │    │
+│  │  Demo: Usa cualquier email  │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  (c) 2026 TalentApp               │
+└─────────────────────────────────────┘
+</div>
+
+<p><strong>Flujo del login:</strong></p>
+<ol>
+  <li>Usuario escribe email y password</li>
+  <li>Al hacer submit, <code>useLogin</code> valida con <code>validateLoginCredentials()</code></li>
+  <li>Si es valido, llama a <code>authService.login()</code></li>
+  <li>El servicio genera un token y lo guarda en localStorage</li>
+  <li>Si es exitoso, navega a <code>/dashboard</code></li>
+  <li>Si falla, muestra mensaje de error</li>
+</ol>
+
+<h2 id="sec-kanban">7.2 Dashboard / KanbanBoard - Pipeline de Reclutamiento</h2>
+
+<p>La pagina principal de la app. Muestra un <strong>tablero Kanban</strong> con 5 columnas que representan las etapas del proceso de reclutamiento. Los candidatos se pueden arrastrar entre columnas.</p>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────────┐
+│  Pipeline de Reclutamiento              [Cargar CV]        │
+│  Gestiona candidatos con IA     [8] [85%] [3 Alto Match]   │
+│                                                             │
+│  Vacante: [Todas ▼]    Score min: [──●──────] 0%           │
+│                                                             │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌────┐│
+│  │ Aplicado │ │ Revision │ │Entrevista│ │Contratado│ │Rech││
+│  │  ● 2     │ │  ● 1     │ │  ● 2     │ │  ● 2     │ │● 1 ││
+│  │          │ │          │ │          │ │          │ │    ││
+│  │┌────────┐│ │┌────────┐│ │┌────────┐│ │┌────────┐│ │    ││
+│  ││ Maria  ││ ││ Ana    ││ ││ Pedro  ││ ││ Miguel ││ │    ││
+│  ││ 92%    ││ ││ 88%    ││ ││ 85%    ││ ││ 91%    ││ │    ││
+│  │└────────┘│ │└────────┘│ │└────────┘│ │└────────┘│ │    ││
+│  │┌────────┐│ │          │ │┌────────┐│ │┌────────┐│ │    ││
+│  ││ Carlos ││ │          │ ││ Laura  ││ ││ Sofia  ││ │    ││
+│  ││ 78%    ││ │          │ ││ 95%    ││ ││ 94%    ││ │    ││
+│  │└────────┘│ │          │ │└────────┘│ │└────────┘│ │    ││
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └────┘│
+└─────────────────────────────────────────────────────────────┘
+</div>
+
+<h3>Columnas del Pipeline:</h3>
+<table>
+  <tr><th>Columna</th><th>Color</th><th>Descripcion</th></tr>
+  <tr><td>Aplicado</td><td><span class="badge gray">Gris</span></td><td>Candidatos que acaban de aplicar</td></tr>
+  <tr><td>En Revision</td><td><span class="badge orange">Naranja</span></td><td>CV siendo analizado por la IA</td></tr>
+  <tr><td>Entrevista</td><td><span class="badge blue">Azul</span></td><td>Programados para entrevista</td></tr>
+  <tr><td>Contratado</td><td><span class="badge green">Verde</span></td><td>Proceso completado exitosamente</td></tr>
+  <tr><td>Rechazado</td><td><span class="badge red">Rojo</span></td><td>No continua en el proceso</td></tr>
+</table>
+
+<h3>Drag and Drop (Arrastrar y Soltar):</h3>
+<p>Implementado con la <strong>API nativa de HTML5 Drag and Drop</strong> (sin librerias externas). El flujo es:</p>
+<ol>
+  <li><code>onDragStart</code> - Guarda el candidato arrastrado en el estado</li>
+  <li><code>onDragOver</code> - Resalta la columna destino (borde azul)</li>
+  <li><code>onDrop</code> - Actualiza la columna del candidato en el estado</li>
+  <li><code>onDragEnd</code> - Limpia el estado de arrastre</li>
+</ol>
+
+<h3>Carga y Analisis de CV (CVUploadModal):</h3>
+<p>Modal de 3 pasos para simular el analisis de un CV con IA:</p>
+<ol>
+  <li><strong>Paso 1:</strong> Subir archivo + llenar nombre, email, telefono, vacante</li>
+  <li><strong>Paso 2:</strong> Animacion de "analizando" (2.5 segundos)</li>
+  <li><strong>Paso 3:</strong> Muestra resultados con scores aleatorios (experiencia, habilidades, educacion, cultura) y habilidades detectadas</li>
+</ol>
+
+<div class="info-box warning">
+  <strong>Simulacion:</strong> El analisis de CV es simulado. Los scores se generan aleatoriamente entre 70-100. Las habilidades se seleccionan al azar de un pool predefinido. En produccion, esto se conectaria a un LLM real.
+</div>
+
+<h2 id="sec-vacantes">7.3 Vacantes - Gestion de Puestos</h2>
+
+<h3>MisVacantes.jsx - Lista de Vacantes</h3>
+<p>Muestra todas las vacantes creadas, agrupadas por departamento. Incluye estadisticas, filtros por estado y busqueda.</p>
+
+<h3>CrearVacante.jsx - Formulario de 3 Pasos</h3>
+<p>Formulario wizard para crear o editar vacantes:</p>
+
+<div class="diagram">
+Paso 1                    Paso 2                    Paso 3
+┌──────────────────┐      ┌──────────────────┐      ┌──────────────────┐
+│ Info Basica       │      │ Detalles          │      │ Requisitos       │
+│                   │      │                   │      │                   │
+│ - Titulo *        │ ──▶  │ - Ubicacion *     │ ──▶  │ - Habilidades    │
+│ - Departamento *  │      │ - Modalidad *     │      │ - Beneficios     │
+│ - Descripcion *   │      │ - Tipo contrato * │      │ - Reclutador *   │
+│ - Responsabilid.  │      │ - Salario min/max │      │ - Email *        │
+│                   │      │ - Experiencia     │      │ - Telefono       │
+│                   │      │ - Mostrar salario │      │                   │
+│     [Continuar]   │      │ [Ant.] [Continuar]│      │ [Ant.] [Publicar]│
+└──────────────────┘      └──────────────────┘      └──────────────────┘
+                                                            │
+                                                            ▼
+                                                    Modal de Exito
+                                                    + Link compartible
+</div>
+
+<h3>DetalleVacante.jsx - Vista Publica</h3>
+<p>Muestra toda la informacion de una vacante. Incluye boton "Enviar mi CV" que abre el cliente de correo con email pre-llenado al reclutador.</p>
+
+<h2 id="sec-pool">7.4 Remanente.jsx - Pool de Candidatos</h2>
+<p>Grid de tarjetas con candidatos previamente evaluados. Filtrable por nombre/email, habilidad especifica y nivel de experiencia (Junior/Mid/Senior).</p>
+
+<h2 id="sec-perfil">7.5 PerfilCandidato.jsx</h2>
+<p>Vista detallada de un candidato con resumen, experiencia, educacion, habilidades e historial de aplicaciones. Actualmente usa datos mock hardcodeados.</p>
+
+<hr>
+
+<!-- ========== SECCION 8 ========== -->
+<h1 class="page-break" id="sec-hooks">8. Hooks Personalizados</h1>
+
+<p>Los <strong>Custom Hooks</strong> son el patron central de TalentApp para separar la logica del estado de la presentacion visual. Cada pagina compleja tiene su propio hook.</p>
+
+<table>
+  <tr><th>Hook</th><th>Pagina</th><th>Que maneja</th></tr>
+  <tr>
+    <td><code>useLogin</code></td>
+    <td>Login</td>
+    <td>Estado del formulario (email, password, loading, error). Validacion y llamada a authService.</td>
+  </tr>
+  <tr>
+    <td><code>useRemanente</code></td>
+    <td>Remanente</td>
+    <td>Carga de candidatos del pool, filtros (busqueda, habilidad, experiencia), estadisticas.</td>
+  </tr>
+  <tr>
+    <td><code>useKanbanBoard</code></td>
+    <td>KanbanBoard</td>
+    <td>Candidatos, drag-and-drop, filtros (vacante, score minimo), modal de detalle, subida de CV, analisis simulado.</td>
+  </tr>
+  <tr>
+    <td><code>useMisVacantes</code></td>
+    <td>MisVacantes</td>
+    <td>Lista de vacantes, filtros (estado, busqueda), agrupacion por departamento, CRUD operations, modal de eliminar.</td>
+  </tr>
+  <tr>
+    <td><code>useVacanteForm</code></td>
+    <td>CrearVacante</td>
+    <td>Formulario de 3 pasos, validacion por paso, modo edicion, habilidades/beneficios, submit a localStorage, modal de exito.</td>
+  </tr>
+</table>
+
+<div class="info-box">
+  <strong>Patron comun en los hooks:</strong>
+  <ol>
+    <li>Definen estado con <code>useState</code></li>
+    <li>Cargan datos iniciales con <code>useEffect</code></li>
+    <li>Calculan valores derivados con <code>useMemo</code></li>
+    <li>Memoizan funciones con <code>useCallback</code></li>
+    <li>Retornan un objeto con estado, setters y acciones</li>
+  </ol>
+</div>
+
+<hr>
+
+<!-- ========== SECCION 9 ========== -->
+<h1 class="page-break" id="sec-utils">9. Utilidades y Constantes</h1>
+
+<h2>9.1 formatters.js - Funciones de Formateo</h2>
+
+<table>
+  <tr><th>Funcion</th><th>Entrada</th><th>Salida</th><th>Ejemplo</th></tr>
+  <tr><td><code>formatDate(date)</code></td><td>String ISO / Date</td><td>Fecha legible</td><td>"25 ene 2026"</td></tr>
+  <tr><td><code>formatDateShort(date)</code></td><td>String ISO</td><td>Fecha corta</td><td>"25 ene"</td></tr>
+  <tr><td><code>getInitials(name)</code></td><td>"Maria Garcia"</td><td>Iniciales</td><td>"MG"</td></tr>
+  <tr><td><code>truncateText(text, max)</code></td><td>Texto largo</td><td>Texto cortado</td><td>"Texto lar..."</td></tr>
+  <tr><td><code>getScoreColor(score)</code></td><td>0-100</td><td>Color hex</td><td>85+ = verde, 70+ = naranja, &lt;70 = rojo</td></tr>
+  <tr><td><code>getScoreBgClass(score)</code></td><td>0-100</td><td>Clase Tailwind</td><td>"bg-emerald-500"</td></tr>
+  <tr><td><code>getExperienceLabel(years)</code></td><td>Numero</td><td>Nivel</td><td>0-2="Junior", 3-5="Mid", 6+="Senior"</td></tr>
+  <tr><td><code>formatPercentage(value)</code></td><td>85.7</td><td>String</td><td>"86%"</td></tr>
+  <tr><td><code>pluralize(count, s, p)</code></td><td>1, "candidato"</td><td>String</td><td>"candidato" / "candidatos"</td></tr>
+</table>
+
+<h2>9.2 validators.js - Validacion de Formularios</h2>
+
+<table>
+  <tr><th>Funcion</th><th>Que valida</th></tr>
+  <tr><td><code>isValidEmail(email)</code></td><td>Formato basico de email con regex</td></tr>
+  <tr><td><code>isNotEmpty(value)</code></td><td>Strings no vacios, arrays con elementos, objetos con propiedades</td></tr>
+  <tr><td><code>hasMinLength(value, min)</code></td><td>Longitud minima de un string</td></tr>
+  <tr><td><code>isValidPhone(phone)</code></td><td>Formato basico de telefono (8-20 digitos). Opcional (retorna true si vacio)</td></tr>
+  <tr><td><code>isVacanteStep1Valid(v)</code></td><td>Titulo y departamento no vacios</td></tr>
+  <tr><td><code>isVacanteStep2Valid(v)</code></td><td>Descripcion con minimo 20 caracteres</td></tr>
+  <tr><td><code>isVacanteStep3Valid(v)</code></td><td>Al menos una habilidad agregada</td></tr>
+  <tr><td><code>validateVacante(v)</code></td><td>Todos los pasos. Retorna <code>{isValid, errors[]}</code></td></tr>
+  <tr><td><code>validateLoginCredentials(c)</code></td><td>Email valido y password no vacio</td></tr>
+</table>
+
+<h2 id="sec-constants">9.3 Constantes</h2>
+
+<h4>menuConstants.js</h4>
+<p>Define los items del menu de navegacion (<code>MAIN_MENU_ITEMS</code>), items del menu de usuario (<code>USER_MENU_ITEMS</code>) y opciones de filtros (<code>FILTER_OPTIONS</code> para experiencia y habilidades).</p>
+
+<h4>pipelineConstants.js</h4>
+<p>Define las 5 columnas del pipeline (<code>PIPELINE_COLUMNS</code>), los estados de vacantes (<code>VACANCY_STATUSES</code>) y los colores/labels asociados a cada estado.</p>
+
+<h4>kanbanConstants.js</h4>
+<p>Contiene los datos mock del tablero Kanban: 4 vacantes de ejemplo (<code>MOCK_VACANTES</code>), 8 candidatos de ejemplo (<code>MOCK_CANDIDATOS</code>) con scores y habilidades, y el pool de habilidades (<code>SKILLS_POOL</code>).</p>
+
+<h4>vacanteConstants.js</h4>
+<p>Configuracion completa del formulario de vacantes: departamentos, ubicaciones, modalidades, tipos de contrato, habilidades sugeridas, beneficios sugeridos, estado inicial del formulario, clases CSS compartidas y configuracion de pasos.</p>
+
+<hr>
+
+<!-- ========== SECCION 10 ========== -->
+<h1 class="page-break" id="sec-styles">10. Estilos y Sistema de Diseno</h1>
+
+<p>El archivo <code>App.css</code> define el sistema de diseno completo usando Tailwind CSS v4 con la directiva <code>@theme</code>:</p>
+
+<h3>Tokens de Diseno (colores personalizados):</h3>
+<table>
+  <tr><th>Token</th><th>Valor</th><th>Uso</th></tr>
+  <tr><td><code>brand-500</code></td><td>#3b82f6</td><td>Color principal (azul)</td></tr>
+  <tr><td><code>success-500</code></td><td>#10b981</td><td>Exito, activo (verde)</td></tr>
+  <tr><td><code>warning-500</code></td><td>#f59e0b</td><td>Advertencia, pausado (amarillo)</td></tr>
+  <tr><td><code>danger-500</code></td><td>#ef4444</td><td>Error, eliminar (rojo)</td></tr>
+  <tr><td><code>neutral-800</code></td><td>#1e293b</td><td>Texto principal (casi negro)</td></tr>
+  <tr><td><code>neutral-500</code></td><td>#64748b</td><td>Texto secundario (gris)</td></tr>
+</table>
+
+<h3>Clases CSS Globales:</h3>
+<table>
+  <tr><th>Clase</th><th>Que aplica</th></tr>
+  <tr><td><code>.app-sidebar</code></td><td>Sidebar fijo de 264px con gradiente y borde</td></tr>
+  <tr><td><code>.app-main</code></td><td>Area principal con margen izquierdo de 264px</td></tr>
+  <tr><td><code>.card-premium</code></td><td>Tarjeta con borde, sombra y hover mejorado</td></tr>
+  <tr><td><code>.btn-premium-primary</code></td><td>Boton gradiente azul con sombra de marca</td></tr>
+  <tr><td><code>.btn-premium-secondary</code></td><td>Boton gris con borde</td></tr>
+  <tr><td><code>.input-standard</code></td><td>Campo de entrada con focus azul y ring</td></tr>
+  <tr><td><code>.animate-fadeIn</code></td><td>Animacion de entrada suave (opacidad + movimiento)</td></tr>
+</table>
+
+<hr>
+
+<!-- ========== SECCION 11 ========== -->
+<h1 class="page-break" id="sec-deploy">11. Despliegue (Docker y Nginx)</h1>
+
+<h3>Dockerfile - Build Multi-etapa</h3>
+<p>El Dockerfile usa 3 etapas para optimizar el tamano de la imagen final:</p>
+
+<table>
+  <tr><th>Etapa</th><th>Imagen Base</th><th>Proposito</th></tr>
+  <tr><td><strong>development</strong></td><td>node:20-alpine</td><td>Servidor de desarrollo con hot-reload (Vite)</td></tr>
+  <tr><td><strong>build</strong></td><td>node:20-alpine</td><td>Compila la app para produccion (<code>npm run build</code>)</td></tr>
+  <tr><td><strong>production</strong></td><td>nginx:alpine</td><td>Sirve los archivos estaticos compilados con Nginx</td></tr>
+</table>
+
+<h3>docker-compose.yml</h3>
+<p>Define dos servicios:</p>
+<ul>
+  <li><strong>dev:</strong> Para desarrollo local. Monta el codigo como volumen para hot-reload. Puerto 5173.</li>
+  <li><strong>prod:</strong> Para produccion. Usa Nginx. Puerto 80.</li>
+</ul>
+
+<h3>nginx.conf</h3>
+<p>Configuracion del servidor web para produccion:</p>
+<ul>
+  <li><strong>SPA routing:</strong> <code>try_files $uri $uri/ /index.html</code> - Todas las rutas redirigen a index.html (necesario para React Router)</li>
+  <li><strong>Compresion gzip:</strong> Reduce el tamano de transferencia</li>
+  <li><strong>Cache de assets:</strong> JS, CSS e imagenes se cachean por 1 ano (immutable)</li>
+  <li><strong>Headers de seguridad:</strong> X-Frame-Options y X-Content-Type-Options</li>
+</ul>
+
+<hr>
+
+<!-- ========== SECCION 12 ========== -->
+<h1 class="page-break" id="sec-models">12. Mapa de Datos y Modelos</h1>
+
+<h2>Modelo: Vacante</h2>
+<pre><code>{
+  id: "1706123456789",        // ID unico (timestamp como string)
+  titulo: "Desarrollador Frontend",
+  departamento: "Tecnologia",
+  descripcion: "Descripcion del puesto...",
+  responsabilidades: "Lista de responsabilidades...",
+  ubicacion: "Ciudad de Mexico",
+  modalidad: "Hibrido",
+  tipoContrato: "Tiempo indefinido",
+  salarioMin: "25000",
+  salarioMax: "45000",
+  mostrarSalario: true,
+  experienciaMin: "2",
+  experienciaMax: "5",
+  habilidades: ["React", "TypeScript", "Node.js"],
+  beneficios: ["Seguro medico", "Home office"],
+  reclutadorNombre: "Maria Gonzalez",
+  reclutadorEmail: "reclutamiento@empresa.com",
+  reclutadorTelefono: "+52 55 1234 5678",
+  estado: "activa",           // "activa" | "pausada" | "cerrada"
+  fechaCreacion: "2026-01-25T10:30:00.000Z"
+}</code></pre>
+
+<h2>Modelo: Candidato (Kanban)</h2>
+<pre><code>{
+  id: 1,
+  nombre: "Maria Garcia",
+  email: "maria.garcia@email.com",
+  telefono: "+52 55 1234 5678",
+  vacanteId: 1,               // ID de la vacante a la que aplico
+  vacante: "Frontend Developer",
+  columna: "aplicado",        // "aplicado"|"revision"|"entrevista"|"contratado"|"rechazado"
+  llmScore: 92,               // Score general del analisis IA (0-100)
+  llmAnalisis: {
+    experiencia: 95,           // Score por categoria (0-100)
+    habilidades: 90,
+    educacion: 88,
+    cultura: 94
+  },
+  skills: ["React", "TypeScript", "Node.js"],
+  experienciaAnios: 5,
+  fechaAplicacion: "2026-01-25"
+}</code></pre>
+
+<h2>Modelo: Candidato (Pool)</h2>
+<pre><code>{
+  id: 1,
+  nombre: "Ana Martinez",
+  email: "ana.martinez@email.com",
+  habilidades: ["Python", "Django", "PostgreSQL"],
+  experiencia: 3,              // Anos de experiencia
+  ubicacion: "Ciudad de Mexico",
+  disponibilidad: "Inmediata", // "Inmediata" | "2 semanas" | "1 mes"
+  ultimaEvaluacion: "2026-01-15",
+  score: 88                    // Score general (0-100)
+}</code></pre>
+
+<h2>Modelo: Autenticacion</h2>
+<pre><code>{
+  // Credenciales de entrada
+  email: "admin@talentapp.com",
+  password: "cualquiera",
+
+  // Token generado (almacenado en localStorage como 'auth_token')
+  token: "token_1706123456789_abc123def",
+
+  // Datos del usuario (mock hardcodeado)
+  user: {
+    name: "Administrador",
+    email: "admin@talentapp.com",
+    role: "Reclutador",
+    initials: "AD"
+  }
+}</code></pre>
+
+<hr>
+
+<div style="text-align:center; padding:60px 20px; color:var(--text-muted);">
+  <div style="font-size:36px; font-weight:800; color:var(--text); margin-bottom:12px;">Fin de la Guia</div>
+  <p style="font-size:16px; margin-bottom:30px;">TalentApp v1.0.0 - Documentacion Tecnica Completa</p>
+  <p style="font-size:13px;">
+    Para descargar como PDF: Abre este archivo en tu navegador,<br>
+    presiona <strong>Ctrl + P</strong> (o Cmd + P en Mac) y selecciona <strong>"Guardar como PDF"</strong>.
+  </p>
+  <div style="margin-top:30px; padding:16px; background:var(--accent-bg); border-radius:10px; display:inline-block;">
+    <strong>Stack:</strong> React 18 + Vite 6 + Tailwind CSS 4 + React Router 6<br>
+    <strong>Archivos:</strong> 60+ archivos fuente | <strong>Lineas:</strong> ~4,500 lineas de codigo
+  </div>
+</div>
+
+</div> <!-- /content -->
+
+</body>
+</html>
