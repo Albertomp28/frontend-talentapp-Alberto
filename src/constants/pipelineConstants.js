@@ -7,8 +7,8 @@
 
 export const PIPELINE_COLUMNS = [
     {
-        id: 'aplicado',
-        titulo: 'Aplicado',
+        id: 'candidatos',
+        titulo: 'Candidatos',
         descripcion: 'Candidatos que han aplicado',
         color: '#64748b'
     },

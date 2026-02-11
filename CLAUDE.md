@@ -1,0 +1,1 @@
+# cada ves que inicies inicia con docker contenedor para todo ya que yo trabajo con docker

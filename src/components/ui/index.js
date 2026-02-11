@@ -1,7 +1,7 @@
 /**
  * UI Components Index
  * Central export for all UI components.
- * 
+ *
  * @module components/ui
  */
 
@@ -11,3 +11,5 @@ export { default as Card, CardHeader, CardBody, CardFooter, StatCard } from './C
 export { default as Avatar } from './Avatar';
 export { default as SearchInput } from './SearchInput';
 export { default as Button, IconButton } from './Button';
+export { default as Icons } from './Icons';
+export * from './Icons';

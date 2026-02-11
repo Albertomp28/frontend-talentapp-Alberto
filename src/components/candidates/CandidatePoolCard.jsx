@@ -1,19 +1,19 @@
 /**
  * CandidatePoolCard Component
  * Candidate card for the Remanente pool grid.
- * 
+ *
  * @module components/candidates/CandidatePoolCard
  */
 
 import { Link } from 'react-router-dom';
-import { getInitials, formatDateShort, getScoreBgClass } from '../../utils/formatters';
-import { candidateService } from '../../services';
+import { getInitials, formatDateShort, getScoreBgClass, getExperienceLabel } from '../../utils/formatters';
+import { BriefcaseIcon, LocationIcon, ClockIcon, ArrowRightIcon } from '../ui/Icons';
 
 /**
  * CandidatePoolCard component
  */
 const CandidatePoolCard = ({ candidato }) => {
-    const experienceLabel = candidateService.getExperienceLabel(candidato.experiencia);
+    const experienceLabel = getExperienceLabel(candidato.experiencia);
 
     return (
         <div className="bg-white border border-neutral-200 rounded-card p-5 relative transition-all hover:border-neutral-300 hover:shadow-premium-md shadow-premium-sm">
@@ -69,10 +69,7 @@ const CandidatePoolCard = ({ candidato }) => {
                     className="flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors"
                 >
                     Ver Perfil
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <line x1="5" y1="12" x2="19" y2="12" />
-                        <polyline points="12 5 19 12 12 19" />
-                    </svg>
+                    <ArrowRightIcon />
                 </Link>
             </div>
         </div>
@@ -90,28 +87,6 @@ const DetailRow = ({ icon, text, badge }) => (
             </span>
         )}
     </div>
-);
-
-// Icons
-const BriefcaseIcon = () => (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-    </svg>
-);
-
-const LocationIcon = () => (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-        <circle cx="12" cy="10" r="3" />
-    </svg>
-);
-
-const ClockIcon = () => (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10" />
-        <polyline points="12 6 12 12 16 14" />
-    </svg>
 );
 
 export default CandidatePoolCard;

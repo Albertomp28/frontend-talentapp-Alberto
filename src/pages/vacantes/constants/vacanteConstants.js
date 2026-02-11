@@ -70,6 +70,11 @@ export const BENEFICIOS_SUGERIDOS = [
   'Días extra de vacaciones',
 ];
 
+// Currency options (matching backend validation: CRC only)
+export const MONEDAS = [
+  { value: 'CRC', label: 'CRC - Colones', symbol: '₡' },
+];
+
 // Initial state for vacancy form
 export const INITIAL_VACANTE_STATE = {
   titulo: '',
@@ -81,17 +86,25 @@ export const INITIAL_VACANTE_STATE = {
   direccionDetalle: '',
   modalidad: '',
   tipoContrato: '',
+  moneda: 'CRC',
   salarioMin: '',
   salarioMax: '',
   mostrarSalario: true,
   requisitosMinimos: [],
   habilidadesDeseadas: [],
   beneficios: [],
+  reclutadorNombre: '',
+  reclutadorEmail: '',
+  reclutadorTelefono: '',
 };
 
 // Shared Tailwind CSS classes
 export const INPUT_CLASSES =
   'w-full px-4 py-4 bg-white border-2 border-slate-200 rounded-xl text-slate-800 text-base outline-none transition-all focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 placeholder:text-slate-400 hover:border-slate-300';
+
+/** Input classes when the field has a validation error */
+export const INPUT_ERROR_CLASSES =
+  'w-full px-4 py-4 bg-white border-2 border-red-400 rounded-xl text-slate-800 text-base outline-none transition-all focus:border-red-500 focus:ring-4 focus:ring-red-500/10 placeholder:text-slate-400';
 
 export const LABEL_CLASSES = 'block mb-2 text-sm font-bold text-slate-700';
 

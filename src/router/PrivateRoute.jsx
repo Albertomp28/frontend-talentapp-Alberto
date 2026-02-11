@@ -1,4 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
+import { storageService } from '../services';
 
 /**
  * Componente que protege rutas privadas.
@@ -8,10 +9,8 @@ import { Navigate, useLocation } from 'react-router-dom';
 const PrivateRoute = ({ children }) => {
   const location = useLocation();
 
-  // Simulación de verificación de token
-  // TODO: Reemplazar con lógica real de autenticación (Context, Redux, etc.)
   const getToken = () => {
-    return localStorage.getItem('auth_token');
+    return storageService.getItem(storageService.KEYS.AUTH_TOKEN, null);
   };
 
   const isAuthenticated = !!getToken();

@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import {
     INPUT_CLASSES,
+    INPUT_ERROR_CLASSES,
     LABEL_CLASSES
 } from '../constants/vacanteConstants';
 import { getAISuggestions } from '../../../services';
 
 /**
  * Step 3: Skills, Benefits, and Contact Info
+ *
+ * @param {Object} props
+ * @param {Object} props.fieldErrors - Per-field error messages from the hook
  */
 const VacanteStep3 = ({
     vacante,
@@ -19,7 +23,8 @@ const VacanteStep3 = ({
     setNuevoBeneficio,
     agregarRequisitoMinimo,
     agregarHabilidadDeseada,
-    agregarBeneficio
+    agregarBeneficio,
+    fieldErrors = {},
 }) => {
     const [showRequisitosDropdown, setShowRequisitosDropdown] = useState(false);
     const [showHabilidadesDropdown, setShowHabilidadesDropdown] = useState(false);
@@ -107,13 +112,13 @@ const VacanteStep3 = ({
                 {/* Left Column: Skills and Benefits */}
                 <div className="space-y-6">
                     {/* Minimum Requirements Section */}
-                    <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    <div className={`bg-slate-50 p-6 rounded-xl border ${fieldErrors.requisitosMinimos ? 'border-red-400' : 'border-slate-200'}`}>
                         <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                             <svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M9 11l3 3L22 4"></path>
                                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                             </svg>
-                            Requisitos Mínimos
+                            Requisitos Minimos <span className="text-red-500">*</span>
                             <span className="text-xs font-normal text-slate-500">(Obligatorios)</span>
                         </h3>
                         <div className="flex gap-2 mb-4">
@@ -211,6 +216,9 @@ const VacanteStep3 = ({
                         <p className="text-xs text-slate-400 mt-4 italic">
                             Requisitos indispensables para aplicar al puesto.
                         </p>
+                        {fieldErrors.requisitosMinimos && (
+                            <p className="mt-2 text-sm text-red-500">{fieldErrors.requisitosMinimos}</p>
+                        )}
                     </div>
 
                     {/* Desired Skills Section */}
@@ -440,11 +448,16 @@ const VacanteStep3 = ({
                                     </label>
                                     <input
                                         type="text"
-                                        className={INPUT_CLASSES}
+                                        className={fieldErrors.reclutadorNombre ? INPUT_ERROR_CLASSES : INPUT_CLASSES}
                                         value={vacante.reclutadorNombre}
                                         onChange={(e) => updateField('reclutadorNombre', e.target.value)}
-                                        placeholder="Ej: María González"
+                                        placeholder="Ej: Maria Gonzalez"
+                                        aria-invalid={!!fieldErrors.reclutadorNombre}
+                                        aria-describedby={fieldErrors.reclutadorNombre ? 'error-reclutadorNombre' : undefined}
                                     />
+                                    {fieldErrors.reclutadorNombre && (
+                                        <p id="error-reclutadorNombre" className="mt-1 text-sm text-red-500">{fieldErrors.reclutadorNombre}</p>
+                                    )}
                                 </div>
                                 <div>
                                     <label className={LABEL_CLASSES}>
@@ -452,11 +465,16 @@ const VacanteStep3 = ({
                                     </label>
                                     <input
                                         type="email"
-                                        className={INPUT_CLASSES}
+                                        className={fieldErrors.reclutadorEmail ? INPUT_ERROR_CLASSES : INPUT_CLASSES}
                                         value={vacante.reclutadorEmail}
                                         onChange={(e) => updateField('reclutadorEmail', e.target.value)}
                                         placeholder="reclutamiento@empresa.com"
+                                        aria-invalid={!!fieldErrors.reclutadorEmail}
+                                        aria-describedby={fieldErrors.reclutadorEmail ? 'error-reclutadorEmail' : undefined}
                                     />
+                                    {fieldErrors.reclutadorEmail && (
+                                        <p id="error-reclutadorEmail" className="mt-1 text-sm text-red-500">{fieldErrors.reclutadorEmail}</p>
+                                    )}
                                 </div>
                                 <div>
                                     <label className={LABEL_CLASSES}>Teléfono (opcional)</label>

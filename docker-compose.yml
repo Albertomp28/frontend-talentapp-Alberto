@@ -17,6 +17,7 @@ services:
     environment:
       - NODE_ENV=development
       - VITE_API_URL=http://localhost:3000
+      - VITE_CV_PROCESSOR_URL=http://localhost:8000
     stdin_open: true
     tty: true
 

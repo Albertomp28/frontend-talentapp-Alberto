@@ -1,37 +1,47 @@
 /**
  * VacanteCard Component
  * Individual vacancy card for the MisVacantes grid.
- * 
+ *
  * @module pages/vacantes/components/VacanteCard
  */
 
 import { StatusBadge } from '../../../components/ui';
+import {
+    LocationIcon,
+    CalendarIcon,
+    EyeIcon,
+    CopyIcon,
+    EditIcon,
+    PauseIcon,
+    PlayIcon,
+    TrashIcon
+} from '../../../components/ui/Icons';
 import { formatDate, truncateText } from '../../../utils/formatters';
 
 /**
  * VacanteCard component
  */
 const VacanteCard = ({
-  vacante,
-  onView,
-  onEdit,
-  onCopy,
-  onPublish,
-  onClose,
-  onDelete,
+    vacante,
+    onView,
+    onEdit,
+    onCopy,
+    onPublish,
+    onClose,
+    onDelete,
 }) => {
-  const isDraft = vacante.estado === 'draft';
-  const isPublished = vacante.estado === 'published';
-  const isClosed = vacante.estado === 'closed';
+    const isDraft = vacante.estado === 'draft';
+    const isPublished = vacante.estado === 'published';
+    const isClosed = vacante.estado === 'closed';
 
-  return (
-    <div
-      className={`
-        bg-white border rounded-xl p-5 transition-all shadow-sm
-        hover:shadow-md hover:border-slate-300
-        ${isClosed ? 'border-slate-200 opacity-60' : 'border-slate-200'}
-      `}
-    >
+    return (
+        <div
+            className={`
+                bg-white border rounded-xl p-5 transition-all shadow-sm
+                hover:shadow-md hover:border-slate-300
+                ${isClosed ? 'border-slate-200 opacity-60' : 'border-slate-200'}
+            `}
+        >
             {/* Header */}
             <div className="mb-3">
                 <div className="flex items-start justify-between gap-2 mb-2">
@@ -43,19 +53,11 @@ const VacanteCard = ({
 
                 <div className="flex flex-wrap gap-3 text-xs text-slate-500">
                     <span className="flex items-center gap-1">
-                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                            <circle cx="12" cy="10" r="3" />
-                        </svg>
+                        <LocationIcon className="w-3.5 h-3.5" />
                         {vacante.ubicacion || 'Sin ubicación'}
                     </span>
                     <span className="flex items-center gap-1">
-                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
+                        <CalendarIcon className="w-3.5 h-3.5" />
                         {formatDate(vacante.fechaCreacion)}
                     </span>
                 </div>
@@ -87,51 +89,51 @@ const VacanteCard = ({
                 </div>
             )}
 
-      {/* Actions */}
-      <div className="flex gap-2 pt-3 border-t border-slate-100">
-        <ActionButton
-          icon={<EyeIcon />}
-          title="Ver vacante"
-          onClick={() => onView(vacante.id)}
-        />
-        <ActionButton
-          icon={<CopyIcon />}
-          title="Copiar enlace"
-          onClick={() => onCopy(vacante.id)}
-        />
-        {!isClosed && (
-          <ActionButton
-            icon={<EditIcon />}
-            title="Editar vacante"
-            onClick={() => onEdit(vacante.id)}
-          />
-        )}
-        {isDraft && (
-          <ActionButton
-            icon={<PlayIcon />}
-            title="Publicar vacante"
-            onClick={() => onPublish(vacante.id)}
-            className="text-emerald-500 hover:bg-emerald-50"
-          />
-        )}
-        {isPublished && (
-          <ActionButton
-            icon={<PauseIcon />}
-            title="Cerrar vacante"
-            onClick={() => onClose(vacante.id)}
-            className="text-orange-500 hover:bg-orange-50"
-          />
-        )}
-        {!isClosed && (
-          <ActionButton
-            icon={<TrashIcon />}
-            title="Eliminar vacante"
-            onClick={() => onDelete(vacante)}
-            variant="danger"
-            className="ml-auto"
-          />
-        )}
-      </div>
+            {/* Actions */}
+            <div className="flex gap-2 pt-3 border-t border-slate-100">
+                <ActionButton
+                    icon={<EyeIcon />}
+                    title="Ver vacante"
+                    onClick={() => onView(vacante.id)}
+                />
+                <ActionButton
+                    icon={<CopyIcon />}
+                    title="Copiar enlace"
+                    onClick={() => onCopy(vacante.id)}
+                />
+                {!isClosed && (
+                    <ActionButton
+                        icon={<EditIcon />}
+                        title="Editar vacante"
+                        onClick={() => onEdit(vacante.id)}
+                    />
+                )}
+                {isDraft && (
+                    <ActionButton
+                        icon={<PlayIcon />}
+                        title="Publicar vacante"
+                        onClick={() => onPublish(vacante.id)}
+                        className="text-emerald-500 hover:bg-emerald-50"
+                    />
+                )}
+                {isPublished && (
+                    <ActionButton
+                        icon={<PauseIcon />}
+                        title="Cerrar vacante"
+                        onClick={() => onClose(vacante.id)}
+                        className="text-orange-500 hover:bg-orange-50"
+                    />
+                )}
+                {!isClosed && (
+                    <ActionButton
+                        icon={<TrashIcon />}
+                        title="Eliminar vacante"
+                        onClick={() => onDelete(vacante)}
+                        variant="danger"
+                        className="ml-auto"
+                    />
+                )}
+            </div>
         </div>
     );
 };
@@ -153,49 +155,5 @@ const ActionButton = ({ icon, title, onClick, variant, className = '' }) => {
         </button>
     );
 };
-
-// Icon Components
-const EyeIcon = () => (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-        <circle cx="12" cy="12" r="3" />
-    </svg>
-);
-
-const CopyIcon = () => (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-    </svg>
-);
-
-const EditIcon = () => (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-    </svg>
-);
-
-const PauseIcon = () => (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="6" y="4" width="4" height="16" />
-        <rect x="14" y="4" width="4" height="16" />
-    </svg>
-);
-
-const PlayIcon = () => (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <polygon points="5 3 19 12 5 21 5 3" />
-    </svg>
-);
-
-const TrashIcon = () => (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <polyline points="3 6 5 6 21 6" />
-        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-        <line x1="10" y1="11" x2="10" y2="17" />
-        <line x1="14" y1="11" x2="14" y2="17" />
-    </svg>
-);
 
 export default VacanteCard;

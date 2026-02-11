@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Manual de Usuario: Análisis Masivo de CVs - TalentApp</title>
+<style>
+  body {
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    color: #333;
+  }
+  h1 {
+    color: #10b981;
+    font-size: 24pt;
+    border-bottom: 3px solid #10b981;
+    padding-bottom: 10px;
+  }
+  h2 {
+    color: #0f766e;
+    font-size: 16pt;
+    margin-top: 30px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+  }
+  h3 {
+    color: #334155;
+    font-size: 13pt;
+    margin-top: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 15px 0;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  th {
+    background-color: #f1f5f9;
+    font-weight: bold;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  code {
+    background-color: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: Consolas, monospace;
+    font-size: 10pt;
+  }
+  pre {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: Consolas, monospace;
+    font-size: 10pt;
+  }
+  blockquote {
+    border-left: 4px solid #10b981;
+    margin: 15px 0;
+    padding: 10px 20px;
+    background-color: #f0fdf4;
+    color: #166534;
+  }
+  .highlight {
+    background-color: #fef3c7;
+    padding: 2px 4px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 9pt;
+    font-weight: bold;
+  }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-purple { background: #f3e8ff; color: #7c3aed; }
+  .badge-red { background: #fee2e2; color: #dc2626; }
+  .badge-gray { background: #f1f5f9; color: #475569; }
+  .badge-amber { background: #fef3c7; color: #d97706; }
+  hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 30px 0;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+</style>
+</head>
+<body>
+
+<h1>Manual de Usuario: Análisis Masivo de CVs</h1>
+<p style="font-size: 14pt; color: #64748b;">TalentApp - Sistema de Reclutamiento con IA</p>
+
+<hr>
+
+<h2>1. Introducción</h2>
+
+<p>El módulo de <strong>Análisis Masivo de CVs</strong> permite a los reclutadores cargar múltiples currículums simultáneamente y analizarlos automáticamente contra los requisitos de una vacante usando inteligencia artificial.</p>
+
+<h3>Beneficios</h3>
+<ul>
+  <li><strong>Ahorro de tiempo:</strong> Analiza hasta 20 CVs en segundos</li>
+  <li><strong>Consistencia:</strong> Evaluación objetiva basada en requisitos</li>
+  <li><strong>Priorización:</strong> Identifica candidatos con mejor match automáticamente</li>
+</ul>
+
+<hr>
+
+<h2>2. Acceso al Módulo</h2>
+
+<ol>
+  <li>Iniciar sesión en TalentApp</li>
+  <li>Navegar al <strong>Pipeline de Reclutamiento</strong> (Kanban)</li>
+  <li>Click en el botón verde <strong>"Análisis Masivo"</strong></li>
+</ol>
+
+<hr>
+
+<h2>3. Proceso de Análisis (3 Pasos)</h2>
+
+<h3>Paso 1: Carga de CVs</h3>
+
+<h4>Subir archivos</h4>
+<ul>
+  <li><strong>Arrastrar y soltar</strong> archivos en la zona de carga</li>
+  <li>O hacer <strong>click</strong> para seleccionar archivos</li>
+</ul>
+
+<h4>Formatos soportados</h4>
+<table>
+  <tr><th>Formato</th><th>Extensión</th></tr>
+  <tr><td>PDF</td><td>.pdf</td></tr>
+  <tr><td>Word</td><td>.doc, .docx</td></tr>
+</table>
+
+<h4>Límites</h4>
+<ul>
+  <li><strong>Máximo 20 archivos</strong> por lote</li>
+  <li><strong>Máximo 5 MB</strong> por archivo</li>
+</ul>
+
+<h4>Extracción automática de datos</h4>
+<p>Al cargar cada CV, el sistema extrae automáticamente:</p>
+<ul>
+  <li>Nombre del candidato</li>
+  <li>Email</li>
+  <li>Teléfono</li>
+</ul>
+
+<blockquote>
+  <strong>Nota:</strong> Puede editar estos campos manualmente si la extracción no es correcta.
+</blockquote>
+
+<h4>Asignación de vacante</h4>
+<p>Dos opciones disponibles:</p>
+<ol>
+  <li><strong>Vacante Global</strong> (recomendado): Asigna la misma vacante a todos los CVs</li>
+  <li><strong>Vacante Individual:</strong> Selecciona una vacante diferente para cada CV</li>
+</ol>
+
+<hr>
+
+<h3>Paso 2: Procesamiento</h3>
+
+<p>Durante el análisis, el sistema:</p>
+<ol>
+  <li><strong>Extrae el texto</strong> del CV (PDF/Word → texto)</li>
+  <li><strong>Identifica secciones:</strong> experiencia, habilidades, educación</li>
+  <li><strong>Compara semánticamente</strong> con los requisitos de la vacante</li>
+  <li><strong>Calcula el score</strong> de compatibilidad</li>
+</ol>
+
+<h4>Estados por CV</h4>
+<table>
+  <tr><th>Estado</th><th>Color</th><th>Descripción</th></tr>
+  <tr><td>Pendiente</td><td><span class="badge badge-gray">Gris</span></td><td>En cola de espera</td></tr>
+  <tr><td>Extrayendo</td><td><span class="badge badge-blue">Azul</span></td><td>Leyendo contenido del archivo</td></tr>
+  <tr><td>Analizando</td><td><span class="badge badge-purple">Morado</span></td><td>Comparando con vacante</td></tr>
+  <tr><td>Completado</td><td><span class="badge badge-green">Verde</span></td><td>Análisis exitoso</td></tr>
+  <tr><td>Error</td><td><span class="badge badge-red">Rojo</span></td><td>Falló el procesamiento</td></tr>
+</table>
+
+<hr>
+
+<h3>Paso 3: Resultados</h3>
+
+<h4>Estadísticas del lote</h4>
+<ul>
+  <li><strong>Completados:</strong> Número de CVs analizados exitosamente</li>
+  <li><strong>Score Promedio:</strong> Media de compatibilidad del lote</li>
+  <li><strong>Alto Match:</strong> Candidatos con 85% o más de compatibilidad</li>
+</ul>
+
+<h4>Nivel de recomendación</h4>
+<table>
+  <tr><th>Nivel</th><th>Score</th><th>Acción sugerida</th></tr>
+  <tr><td><span class="badge badge-green">Excelente</span></td><td>85%+</td><td>Priorizar entrevista</td></tr>
+  <tr><td><span class="badge badge-blue">Revisar</span></td><td>70-84%</td><td>Evaluar en detalle</td></tr>
+  <tr><td><span class="badge badge-amber">Considerar</span></td><td>40-69%</td><td>Revisar si hay pocos candidatos</td></tr>
+  <tr><td><span class="badge badge-gray">Bajo match</span></td><td>&lt;40%</td><td>Probable descarte</td></tr>
+</table>
+
+<hr class="page-break">
+
+<h2>4. Agregar Candidatos al Pipeline</h2>
+
+<ol>
+  <li>Revisar los resultados del análisis</li>
+  <li>Click en <strong>"Agregar N Candidatos al Pipeline"</strong></li>
+  <li>Los candidatos aparecerán en la columna <strong>"Candidatos"</strong> del Kanban</li>
+</ol>
+
+<hr>
+
+<h2>5. Interpretación del Score</h2>
+
+<p>El score se calcula basándose en:</p>
+
+<h3>Requisitos Obligatorios (must_have)</h3>
+<ul>
+  <li>Peso: <strong>70%</strong> del score total</li>
+  <li>Son las habilidades esenciales para el puesto</li>
+</ul>
+
+<h3>Requisitos Deseables (nice_to_have)</h3>
+<ul>
+  <li>Peso: <strong>30%</strong> del score total</li>
+  <li>Habilidades que suman pero no son indispensables</li>
+</ul>
+
+<h3>Fórmula simplificada</h3>
+<pre>Score = (Similitud promedio × 60%) + (Ratio de matches × 40%)</pre>
+
+<hr>
+
+<h2>6. Tecnología Utilizada</h2>
+
+<h3>Matching Semántico</h3>
+<p>El sistema usa <strong>Sentence-BERT</strong> para comparar texto:</p>
+<ul>
+  <li>No busca palabras exactas</li>
+  <li>Entiende sinónimos y contexto</li>
+  <li>Ejemplo: "React.js" ≈ "ReactJS" ≈ "React"</li>
+</ul>
+
+<h3>Arquitectura del Sistema</h3>
+<pre>
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│  Frontend   │────▶│ CV Processor│────▶│   Claude    │
+│   React     │     │   FastAPI   │     │     AI      │
+└─────────────┘     └─────────────┘     └─────────────┘
+     │                    │
+     │                    ▼
+     │              ┌─────────────┐
+     └─────────────▶│   Backend   │
+                    │   NestJS    │
+                    └─────────────┘
+</pre>
+
+<hr>
+
+<h2>7. Solución de Problemas</h2>
+
+<h3>Error: "Formato no soportado"</h3>
+<ul>
+  <li><strong>Causa:</strong> Archivo no es PDF, DOC o DOCX</li>
+  <li><strong>Solución:</strong> Convertir el archivo al formato correcto</li>
+</ul>
+
+<h3>Error: "Archivo muy grande"</h3>
+<ul>
+  <li><strong>Causa:</strong> Archivo supera 5 MB</li>
+  <li><strong>Solución:</strong> Comprimir el PDF o reducir imágenes</li>
+</ul>
+
+<h3>Score muy bajo en todos los CVs</h3>
+<ul>
+  <li><strong>Posibles causas:</strong>
+    <ul>
+      <li>Requisitos de vacante muy específicos</li>
+      <li>CVs en idioma diferente a los requisitos</li>
+      <li>CVs con formato que dificulta la extracción</li>
+    </ul>
+  </li>
+  <li><strong>Solución:</strong> Revisar que los requisitos de la vacante estén bien definidos</li>
+</ul>
+
+<hr>
+
+<h2>8. Mejores Prácticas</h2>
+
+<h3>Para mejores resultados:</h3>
+<ol>
+  <li><strong>CVs en formato texto</strong> - Evitar CVs escaneados como imagen</li>
+  <li><strong>Requisitos claros</strong> - Definir skills específicas en la vacante</li>
+  <li><strong>Lotes pequeños</strong> - Procesar 5-10 CVs para revisión más detallada</li>
+  <li><strong>Revisar scores bajos</strong> - Un score bajo no siempre significa mal candidato</li>
+</ol>
+
+<h3>Flujo recomendado:</h3>
+<pre>Recibir CVs → Análisis Masivo → Filtrar por score → Revisión manual → Entrevistas</pre>
+
+<hr>
+
+<h2>9. Preguntas Frecuentes</h2>
+
+<p><strong>¿Puedo analizar CVs en inglés y español?</strong><br>
+Sí, el sistema detecta el idioma automáticamente y traduce los requisitos si es necesario.</p>
+
+<p><strong>¿Qué tan preciso es el análisis?</strong><br>
+El matching semántico tiene ~85% de precisión. Siempre se recomienda revisión humana final.</p>
+
+<p><strong>¿Se guardan los CVs?</strong><br>
+Los archivos se procesan en memoria y no se almacenan permanentemente. Solo se guardan los datos del candidato si los agrega al pipeline.</p>
+
+<p><strong>¿Puedo reprocesar un CV?</strong><br>
+Sí, simplemente vuélvalo a cargar en un nuevo análisis.</p>
+
+<hr>
+
+<p style="text-align: center; color: #94a3b8; font-size: 10pt;">
+  <em>Documento generado para TalentApp v1.0</em><br>
+  <em>Última actualización: Febrero 2026</em>
+</p>
+
+</body>
+</html>

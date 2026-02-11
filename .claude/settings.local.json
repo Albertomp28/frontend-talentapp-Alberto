@@ -13,7 +13,30 @@
       "Bash(npx tailwindcss:*)",
       "Bash(curl:*)",
       "Bash(docker compose:*)",
-      "Bash(docker compose build:*)"
+      "Bash(docker compose build:*)",
+      "Bash(docker ps:*)",
+      "Bash(python3:*)",
+      "Bash(npm run build:*)",
+      "Bash(python -c:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(npx vite build:*)",
+      "Bash(.venv/Scripts/python.exe:*)",
+      "Bash(python3.12:*)",
+      "Bash(docker restart:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNGJhM2EyOS0wMDc5LTQ1MGQtYWZkOC0xODRiYTZiNTViNGEiLCJlbWFpbCI6ImFkbWluQHRhbGVudGFwcC5jb20iLCJyb2xlQ29kZSI6ImFkbWluIiwiaWF0IjoxNzcwNjc2MDY5LCJleHAiOjE3NzA2NzY5Njl9.8lMNxrw8aMSftxf0apqUyYPhKPcc6HDsV-usq3ez6Qk\")",
+      "Bash(__NEW_LINE_468109e02f4b26f5__ curl -s -X POST http://localhost:3000/vacancies -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\n    \"\"title\"\": \"\"Desarrollador Full Stack Senior\"\",\n    \"\"departmentId\"\": \"\"041f1363-addf-42b9-92d2-00c06a993b86\"\",\n    \"\"description\"\": {\n      \"\"schema_version\"\": \"\"1.0\"\",\n      \"\"must_have\"\": [\n        {\"\"requirement\"\": \"\"5+ años de experiencia en desarrollo web\"\"},\n        {\"\"requirement\"\": \"\"Dominio de React y Node.js\"\"},\n        {\"\"requirement\"\": \"\"Experiencia con bases de datos SQL y NoSQL\"\"}\n      ],\n      \"\"nice_to_have\"\": [\n        {\"\"requirement\"\": \"\"Conocimiento de Docker y Kubernetes\"\"},\n        {\"\"requirement\"\": \"\"Experiencia con AWS o GCP\"\"}\n      ],\n      \"\"responsibilities\"\": [\n        {\"\"description\"\": \"\"Desarrollar y mantener aplicaciones web escalables\"\"},\n        {\"\"description\"\": \"\"Colaborar con el equipo de diseño para implementar interfaces de usuario\"\"},\n        {\"\"description\"\": \"\"Participar en revisiones de código y mentorear desarrolladores junior\"\"}\n      ],\n      \"\"location\"\": {\n        \"\"province\"\": \"\"San José\"\",\n        \"\"address_detail\"\": \"\"Oficinas centrales, Escazú\"\"\n      },\n      \"\"modality\"\": \"\"hibrido\"\",\n      \"\"contract_type\"\": \"\"tiempo_indefinido\"\",\n      \"\"compensation\"\": {\n        \"\"min_salary\"\": 3000,\n        \"\"max_salary\"\": 5000,\n        \"\"currency\"\": \"\"USD\"\"\n      },\n      \"\"benefits\"\": [\n        {\"\"benefit\"\": \"\"Seguro médico privado\"\"},\n        {\"\"benefit\"\": \"\"Home office 3 días por semana\"\"},\n        {\"\"benefit\"\": \"\"Capacitación continua\"\"}\n      ]\n    }\n  }')",
+      "Bash(lsof:*)",
+      "Bash(netstat:*)",
+      "Bash(ss -tlnp:*)",
+      "Bash(__NEW_LINE_435a61ff96666b4f__ curl -s -X POST http://localhost:3000/vacancies -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\n    \"\"title\"\": \"\"Desarrollador Full Stack Senior\"\",\n    \"\"departmentId\"\": \"\"041f1363-addf-42b9-92d2-00c06a993b86\"\",\n    \"\"description\"\": {\n      \"\"schema_version\"\": \"\"1.0\"\",\n      \"\"must_have\"\": [\n        {\"\"requirement\"\": \"\"5+ años de experiencia en desarrollo web\"\"},\n        {\"\"requirement\"\": \"\"Dominio de React y Node.js\"\"},\n        {\"\"requirement\"\": \"\"Experiencia con bases de datos SQL y NoSQL\"\"}\n      ],\n      \"\"nice_to_have\"\": [\n        {\"\"requirement\"\": \"\"Conocimiento de Docker y Kubernetes\"\"},\n        {\"\"requirement\"\": \"\"Experiencia con AWS o GCP\"\"}\n      ],\n      \"\"responsibilities\"\": [\n        {\"\"description\"\": \"\"Desarrollar y mantener aplicaciones web escalables\"\"},\n        {\"\"description\"\": \"\"Colaborar con el equipo de diseño para implementar interfaces\"\"},\n        {\"\"description\"\": \"\"Participar en revisiones de codigo y mentorear juniors\"\"}\n      ],\n      \"\"location\"\": {\n        \"\"province\"\": \"\"San José\"\",\n        \"\"address_detail\"\": \"\"Oficinas centrales, Escazu\"\"\n      },\n      \"\"modality\"\": \"\"hibrido\"\",\n      \"\"contract_type\"\": \"\"tiempo_indefinido\"\",\n      \"\"compensation\"\": {\n        \"\"min_salary\"\": 800000,\n        \"\"max_salary\"\": 1500000,\n        \"\"currency\"\": \"\"CRC\"\"\n      },\n      \"\"benefits\"\": [\n        {\"\"benefit\"\": \"\"Seguro medico privado\"\"},\n        {\"\"benefit\"\": \"\"Home office 3 dias por semana\"\"},\n        {\"\"benefit\"\": \"\"Capacitacion continua\"\"}\n      ]\n    }\n  }')",
+      "Bash(netstat.exe:*)",
+      "Bash(taskkill.exe:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNGJhM2EyOS0wMDc5LTQ1MGQtYWZkOC0xODRiYTZiNTViNGEiLCJlbWFpbCI6ImFkbWluQHRhbGVudGFwcC5jb20iLCJyb2xlQ29kZSI6ImFkbWluIiwiaWF0IjoxNzcwNjgyOTkwLCJleHAiOjE3NzA2ODM4OTB9.xWdirZTdVWceT0I7qY6qS9B7A-XHEPEWYB-KtDjAMm4\")",
+      "Bash(__NEW_LINE_654278bb1608683f__ curl -s -X POST http://localhost:3000/vacancies -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\n    \"\"title\"\": \"\"Desarrollador Frontend Test\"\",\n    \"\"departmentId\"\": \"\"041f1363-addf-42b9-92d2-00c06a993b86\"\",\n    \"\"description\"\": {\n      \"\"schema_version\"\": \"\"1.0\"\",\n      \"\"must_have\"\": [{\"\"requirement\"\": \"\"React\"\"}],\n      \"\"nice_to_have\"\": [{\"\"requirement\"\": \"\"TypeScript\"\"}],\n      \"\"responsibilities\"\": [{\"\"description\"\": \"\"Descripcion general del puesto\"\"}, {\"\"description\"\": \"\"Desarrollar interfaces de usuario\"\"}],\n      \"\"location\"\": {\n        \"\"province\"\": \"\"San Jose\"\",\n        \"\"address_detail\"\": \"\"\"\"\n      },\n      \"\"modality\"\": \"\"remoto\"\",\n      \"\"contract_type\"\": \"\"tiempo_indefinido\"\",\n      \"\"compensation\"\": {\n        \"\"min_salary\"\": 1000,\n        \"\"max_salary\"\": 3000,\n        \"\"currency\"\": \"\"USD\"\"\n      },\n      \"\"benefits\"\": [{\"\"benefit\"\": \"\"Seguro medico\"\"}]\n    }\n  }')",
+      "Bash(docker-compose ps:*)",
+      "Bash(openssl rand:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

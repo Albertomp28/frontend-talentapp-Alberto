@@ -173,24 +173,12 @@ const getStats = () => {
     };
 };
 
-/**
- * Get experience level label
- * @param {number} years - Years of experience
- * @returns {string}
- */
-const getExperienceLabel = (years) => {
-    if (years <= 2) return 'Junior';
-    if (years <= 5) return 'Mid-Level';
-    return 'Senior';
-};
-
 export const candidateService = {
     getFromPool,
     addToPool,
     getById,
     filterCandidates,
     getStats,
-    getExperienceLabel,
     EXAMPLE_CANDIDATES,
 };
 

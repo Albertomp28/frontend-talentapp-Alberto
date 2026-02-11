@@ -59,6 +59,14 @@ const CrearVacante = () => {
     isStep1Valid,
     isStep2Valid,
     isStep3Valid,
+    fieldErrors,
+    stepAttempted,
+    markStep3Attempted,
+    estimatingSalary,
+    salaryReasoning,
+    salaryEstimateError,
+    handleEstimateSalary,
+    setSalaryReasoning,
   } = useVacanteForm();
 
   // Loading state
@@ -110,11 +118,20 @@ const CrearVacante = () => {
 
             {/* Step Content */}
             {step === 1 && (
-              <VacanteStep1 vacante={vacante} setVacante={setVacante} departments={departments} />
+              <VacanteStep1 vacante={vacante} setVacante={setVacante} departments={departments} fieldErrors={fieldErrors} />
             )}
 
             {step === 2 && (
-              <VacanteStep2 vacante={vacante} setVacante={setVacante} />
+              <VacanteStep2
+                vacante={vacante}
+                setVacante={setVacante}
+                estimatingSalary={estimatingSalary}
+                salaryReasoning={salaryReasoning}
+                salaryEstimateError={salaryEstimateError}
+                onEstimateSalary={handleEstimateSalary}
+                onDismissReasoning={() => setSalaryReasoning('')}
+                fieldErrors={fieldErrors}
+              />
             )}
 
             {step === 3 && (
@@ -130,6 +147,7 @@ const CrearVacante = () => {
                 agregarRequisitoMinimo={agregarRequisitoMinimo}
                 agregarHabilidadDeseada={agregarHabilidadDeseada}
                 agregarBeneficio={agregarBeneficio}
+                fieldErrors={fieldErrors}
               />
             )}
 
@@ -153,9 +171,8 @@ const CrearVacante = () => {
               {step < 3 ? (
                 <button
                   type="button"
-                  className="flex items-center gap-2 px-8 py-3.5 bg-blue-600 text-white rounded-xl font-bold text-base shadow-lg hover:shadow-xl hover:bg-blue-700 transition-all disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-8 py-3.5 bg-blue-600 text-white rounded-xl font-bold text-base shadow-lg hover:shadow-xl hover:bg-blue-700 transition-all"
                   onClick={handleNextStep}
-                  disabled={(step === 1 && !isStep1Valid) || (step === 2 && !isStep2Valid)}
                 >
                   Continuar
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -168,7 +185,7 @@ const CrearVacante = () => {
                   type="button"
                   className="flex items-center gap-2 px-8 py-3.5 bg-emerald-600 text-white rounded-xl font-bold text-base shadow-lg hover:shadow-xl hover:bg-emerald-700 transition-all disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none disabled:cursor-not-allowed"
                   onClick={handleSubmit}
-                  disabled={!isStep3Valid || saving}
+                  disabled={saving}
                 >
                   {saving ? (
                     <>

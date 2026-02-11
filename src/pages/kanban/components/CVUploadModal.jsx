@@ -9,6 +9,27 @@ import Modal from '../../../components/ui/Modal';
 import { getScoreColor } from '../../../utils/formatters';
 
 /**
+ * Badge for the deep analysis recommendation decision.
+ * Maps backend decisions (hire/needs_review/reject) to styled labels.
+ */
+const DeepRecommendationBadge = ({ decision }) => {
+    const config = {
+        hire: { bg: 'bg-emerald-100', text: 'text-emerald-700', label: 'Contratar' },
+        needs_review: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Necesita revisión' },
+        reject: { bg: 'bg-red-100', text: 'text-red-700', label: 'No recomendado' },
+    };
+
+    const normalized = (decision || '').toLowerCase().replace(/\s+/g, '_');
+    const { bg, text, label } = config[normalized] || config.needs_review;
+
+    return (
+        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${bg} ${text}`}>
+            {label}
+        </span>
+    );
+};
+
+/**
  * CVUploadModal component
  */
 const CVUploadModal = ({
@@ -18,6 +39,8 @@ const CVUploadModal = ({
     cvData,
     analysisResult,
     vacantes,
+    extractingData = false,
+    deepAnalysisLoading = false,
     onFileChange,
     onDataChange,
     onAnalyze,
@@ -26,8 +49,12 @@ const CVUploadModal = ({
 }) => {
     const inputClasses = "w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-800 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all";
 
+    // Use a wider modal when deep analysis results are displayed
+    const hasDeepContent = analysisResult?.deepAnalysis || deepAnalysisLoading;
+    const modalWidth = uploadStep === 3 && hasDeepContent ? 'max-w-2xl' : 'max-w-lg';
+
     return (
-        <Modal show={show} onClose={onClose} maxWidth="max-w-lg">
+        <Modal show={show} onClose={onClose} maxWidth={modalWidth}>
             {/* Close Button */}
             <button
                 className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl"
@@ -74,12 +101,22 @@ const CVUploadModal = ({
                         >
                             {cvFile ? (
                                 <>
-                                    <svg className="w-10 h-10 mx-auto mb-2 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                        <polyline points="14 2 14 8 20 8" />
-                                    </svg>
-                                    <span className="text-slate-700 font-medium">{cvFile.name}</span>
-                                    <span className="block text-xs text-slate-500">{(cvFile.size / 1024).toFixed(1)} KB</span>
+                                    {extractingData ? (
+                                        <>
+                                            <div className="w-10 h-10 mx-auto mb-2 border-2 border-slate-200 border-t-blue-500 rounded-full animate-spin" />
+                                            <span className="text-slate-600 font-medium">Extrayendo datos...</span>
+                                            <span className="block text-xs text-slate-400">Analizando {cvFile.name}</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg className="w-10 h-10 mx-auto mb-2 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                <polyline points="14 2 14 8 20 8" />
+                                            </svg>
+                                            <span className="text-slate-700 font-medium">{cvFile.name}</span>
+                                            <span className="block text-xs text-slate-500">{(cvFile.size / 1024).toFixed(1)} KB</span>
+                                        </>
+                                    )}
                                 </>
                             ) : (
                                 <>
@@ -253,7 +290,7 @@ const CVUploadModal = ({
                     </div>
 
                     {/* Experience */}
-                    <div className="flex items-center gap-2 text-sm text-slate-500 mb-6">
+                    <div className="flex items-center gap-2 text-sm text-slate-500 mb-4">
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
                             <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
@@ -261,8 +298,143 @@ const CVUploadModal = ({
                         {analysisResult.experienciaAnios} años de experiencia detectados
                     </div>
 
+                    {/* Deep Analysis Loading Indicator */}
+                    {deepAnalysisLoading && (
+                        <div className="mb-4 p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
+                            <div className="flex items-center gap-3">
+                                <div className="w-5 h-5 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin flex-shrink-0" />
+                                <div>
+                                    <p className="text-sm font-medium text-indigo-700">Analizando con IA avanzada...</p>
+                                    <p className="text-xs text-indigo-500 mt-0.5">
+                                        Evaluando fortalezas, áreas de mejora y generando preguntas para entrevista
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Deep Analysis Results */}
+                    {analysisResult.deepAnalysis && (
+                        <div className="mb-4 space-y-3">
+                            {/* Section Header */}
+                            <div className="flex items-center gap-2">
+                                <div className="w-5 h-5 bg-indigo-100 rounded flex items-center justify-center">
+                                    <svg className="w-3 h-3 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                        <path d="M2 17l10 5 10-5" />
+                                        <path d="M2 12l10 5 10-5" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-sm font-semibold text-slate-800">Análisis Profundo con IA</h3>
+                            </div>
+
+                            {/* Deep Analysis Summary */}
+                            {analysisResult.deepAnalysis.overallSummary && (
+                                <p className="text-sm text-slate-600 bg-slate-50 rounded-lg p-3">
+                                    {analysisResult.deepAnalysis.overallSummary}
+                                </p>
+                            )}
+
+                            {/* Strengths */}
+                            {analysisResult.deepAnalysis.strengths?.length > 0 && (
+                                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                                    <h4 className="text-xs font-semibold text-emerald-700 uppercase tracking-wide mb-2">
+                                        Fortalezas
+                                    </h4>
+                                    <ul className="space-y-1">
+                                        {analysisResult.deepAnalysis.strengths.map((strength, idx) => (
+                                            <li key={idx} className="flex items-start gap-2 text-sm text-emerald-800">
+                                                <svg className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <polyline points="20 6 9 17 4 12" />
+                                                </svg>
+                                                {strength}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                            {/* Weaknesses / Areas of Improvement */}
+                            {analysisResult.deepAnalysis.weaknesses?.length > 0 && (
+                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                                    <h4 className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">
+                                        Áreas de Mejora
+                                    </h4>
+                                    <ul className="space-y-1">
+                                        {analysisResult.deepAnalysis.weaknesses.map((weakness, idx) => (
+                                            <li key={idx} className="flex items-start gap-2 text-sm text-amber-800">
+                                                <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <line x1="12" y1="8" x2="12" y2="12" />
+                                                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                                                </svg>
+                                                {weakness}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                            {/* LLM Recommendation */}
+                            {analysisResult.deepAnalysis.recommendation && (
+                                <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
+                                    <h4 className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">
+                                        Recomendación IA
+                                    </h4>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <DeepRecommendationBadge decision={analysisResult.deepAnalysis.recommendation.decision} />
+                                        {analysisResult.deepAnalysis.recommendation.confidence && (
+                                            <span className="text-xs text-slate-400">
+                                                Confianza: {analysisResult.deepAnalysis.recommendation.confidence}
+                                            </span>
+                                        )}
+                                    </div>
+                                    {analysisResult.deepAnalysis.recommendation.reasoning && (
+                                        <p className="text-sm text-slate-600 mt-1">
+                                            {analysisResult.deepAnalysis.recommendation.reasoning}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Suggested Interview Questions - derived from must_have evaluation */}
+                            {analysisResult.deepAnalysis.mustHaveEvaluation?.length > 0 && (
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                    <h4 className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">
+                                        Preguntas Sugeridas para Entrevista
+                                    </h4>
+                                    <ul className="space-y-1.5">
+                                        {analysisResult.deepAnalysis.mustHaveEvaluation
+                                            .filter((item) => !item.met || item.confidence === 'low' || item.confidence === 'medium')
+                                            .slice(0, 3)
+                                            .map((item, idx) => (
+                                                <li key={idx} className="text-sm text-blue-800">
+                                                    <span className="font-medium">
+                                                        {item.met ? 'Profundizar: ' : 'Validar: '}
+                                                    </span>
+                                                    {item.met
+                                                        ? `¿Puede describir su experiencia con ${item.requirement}?`
+                                                        : `¿Tiene experiencia con ${item.requirement}? ${item.evidence !== 'No mencionado' ? `(CV menciona: ${item.evidence})` : ''}`
+                                                    }
+                                                </li>
+                                            ))
+                                        }
+                                        {/* Fallback: if all requirements are met with high confidence, suggest general questions */}
+                                        {analysisResult.deepAnalysis.mustHaveEvaluation
+                                            .filter((item) => !item.met || item.confidence === 'low' || item.confidence === 'medium')
+                                            .length === 0 && (
+                                            <li className="text-sm text-blue-800">
+                                                Todos los requisitos clave fueron validados. Sugerimos explorar motivación y fit cultural.
+                                            </li>
+                                        )}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {/* Action Buttons */}
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 mt-2">
                         <button
                             className="px-4 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
                             onClick={onClose}
@@ -279,7 +451,7 @@ const CVUploadModal = ({
                                 <line x1="20" y1="8" x2="20" y2="14" />
                                 <line x1="23" y1="11" x2="17" y2="11" />
                             </svg>
-                            Agregar a Aplicados
+                            Agregar a Candidatos
                         </button>
                     </div>
                 </div>

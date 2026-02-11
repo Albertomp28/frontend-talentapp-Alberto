@@ -19,6 +19,7 @@ import { PIPELINE_COLUMNS } from './constants/kanbanConstants';
 import KanbanColumn from './components/KanbanColumn';
 import CandidateDetailModal from './components/CandidateDetailModal';
 import CVUploadModal from './components/CVUploadModal';
+import MultiCVUploadModal from './components/MultiCVUploadModal';
 
 /**
  * KanbanBoard Page Component
@@ -35,10 +36,13 @@ const KanbanBoard = () => {
     cvFile,
     cvData,
     analysisResult,
+    extractingData,
+    deepAnalysisLoading,
 
     // Computed
     stats,
     vacantes,
+    loadingVacantes,
 
     // Methods
     getCandidatosPorColumna,
@@ -62,6 +66,13 @@ const KanbanBoard = () => {
     agregarCandidato,
     cerrarModalUpload,
     abrirModalUpload,
+
+    // Multi-CV upload
+    showMultiUploadModal,
+    multiCVUpload,
+    abrirModalMultiUpload,
+    cerrarModalMultiUpload,
+    agregarCandidatosMultiple,
   } = useKanbanBoard();
 
   return (
@@ -73,17 +84,35 @@ const KanbanBoard = () => {
           <p className="text-slate-500">Gestiona candidatos con análisis de IA</p>
         </div>
 
-        <button
-          onClick={abrirModalUpload}
-          className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-emerald-500/30 transition-all"
-        >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="17 8 12 3 7 8" />
-            <line x1="12" y1="3" x2="12" y2="15" />
-          </svg>
-          Cargar CV
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={abrirModalUpload}
+            disabled={loadingVacantes || vacantes.length === 0}
+            className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-medium hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            title={vacantes.length === 0 ? 'No hay vacantes publicadas' : ''}
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            {loadingVacantes ? 'Cargando...' : 'Cargar 1 CV'}
+          </button>
+          <button
+            onClick={abrirModalMultiUpload}
+            disabled={loadingVacantes || vacantes.length === 0}
+            className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-emerald-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            title={vacantes.length === 0 ? 'No hay vacantes publicadas' : ''}
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <path d="M12 18v-6" />
+              <path d="M9 15l3-3 3 3" />
+            </svg>
+            {loadingVacantes ? 'Cargando...' : 'Análisis Masivo'}
+          </button>
+        </div>
 
         {/* Stats */}
         <div className="flex gap-3">
@@ -101,8 +130,11 @@ const KanbanBoard = () => {
             value={filtroVacante}
             onChange={(e) => setFiltroVacante(e.target.value)}
             className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 text-sm outline-none focus:border-blue-500 focus:bg-white transition-all"
+            disabled={loadingVacantes}
           >
-            <option value="todas">Todas las vacantes</option>
+            <option value="todas">
+              {loadingVacantes ? 'Cargando vacantes...' : 'Todas las vacantes'}
+            </option>
             {vacantes.map(v => (
               <option key={v.id} value={v.id}>{v.titulo}</option>
             ))}
@@ -157,11 +189,22 @@ const KanbanBoard = () => {
         cvData={cvData}
         analysisResult={analysisResult}
         vacantes={vacantes}
+        extractingData={extractingData}
+        deepAnalysisLoading={deepAnalysisLoading}
         onFileChange={handleFileChange}
         onDataChange={setCvData}
         onAnalyze={analizarCV}
         onAddCandidate={agregarCandidato}
         onClose={cerrarModalUpload}
+      />
+
+      {/* Multi-CV Upload Modal */}
+      <MultiCVUploadModal
+        show={showMultiUploadModal}
+        onClose={cerrarModalMultiUpload}
+        vacantes={vacantes}
+        onAddCandidates={agregarCandidatosMultiple}
+        {...multiCVUpload}
       />
     </div>
   );
