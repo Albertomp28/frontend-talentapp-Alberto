@@ -7,7 +7,10 @@
  * The API key is stored securely in the backend.
  */
 
-const CV_PROCESSOR_URL = import.meta.env.VITE_CV_PROCESSOR_URL || 'http://localhost:8000';
+import config from '../config';
+
+const CV_PROCESSOR_URL = config.CV_PROCESSOR_URL;
+const CV_PROCESSOR_API_KEY = config.CV_PROCESSOR_API_KEY;
 
 /**
  * Get AI-powered suggestions for job requirements or descriptions
@@ -28,8 +31,14 @@ export const getAISuggestions = async (puesto, departamento, tipo) => {
         formData.append('departamento', departamento);
         formData.append('tipo', tipo);
 
+        const headers = {};
+        if (CV_PROCESSOR_API_KEY) {
+            headers['X-API-Key'] = CV_PROCESSOR_API_KEY;
+        }
+
         const response = await fetch(`${CV_PROCESSOR_URL}/api/v1/suggestions`, {
             method: 'POST',
+            headers,
             body: formData,
         });
 
@@ -91,20 +100,39 @@ export const estimateSalary = async (vacancyData) => {
             currency: moneda || 'CRC',
         };
 
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        if (CV_PROCESSOR_API_KEY) {
+            headers['X-API-Key'] = CV_PROCESSOR_API_KEY;
+        }
+
         const response = await fetch(`${CV_PROCESSOR_URL}/api/v1/salary/estimate`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers,
             body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            console.error('Error estimando salario:', errorData);
+            console.error('Error estimando salario (raw):', JSON.stringify(errorData, null, 2));
+
+            let errorMessage = 'Error al estimar el salario';
+
+            if (Array.isArray(errorData.detail)) {
+                // Formatting Pydantic validation errors
+                errorMessage = errorData.detail.map(err => err.msg || err.message || JSON.stringify(err)).join(', ');
+            } else if (typeof errorData.detail === 'string') {
+                errorMessage = errorData.detail;
+            } else if (errorData.message) {
+                errorMessage = errorData.message;
+            } else if (typeof errorData.detail === 'object') {
+                errorMessage = JSON.stringify(errorData.detail);
+            }
+
             return {
                 success: false,
-                error: errorData.detail || errorData.message || 'Error al estimar el salario',
+                error: errorMessage,
             };
         }
 

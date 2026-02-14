@@ -44,7 +44,9 @@ const VacanteStep1 = ({ vacante, setVacante, departments = [], fieldErrors = {} 
         setVacante({
           ...vacante,
           descripcion: result.descripcion,
-          responsabilidades: result.responsabilidades || '',
+          responsabilidades: Array.isArray(result.responsabilidades)
+            ? result.responsabilidades.join('\n')
+            : String(result.responsabilidades || ''),
         });
       } else {
         setAiError('No se pudo generar la descripción');
@@ -108,75 +110,74 @@ const VacanteStep1 = ({ vacante, setVacante, departments = [], fieldErrors = {} 
         </div>
       </div>
 
-            {/* Botón Generar con IA */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <button
-                        type="button"
-                        onClick={generateWithAI}
-                        disabled={!canGenerateAI || generatingAI}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                            canGenerateAI && !generatingAI
-                                ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:shadow-lg hover:shadow-purple-500/30'
-                                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                        }`}
-                    >
-                        {generatingAI ? (
-                            <>
-                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                Generando...
-                            </>
-                        ) : (
-                            <>
-                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"></path>
-                                    <circle cx="7.5" cy="14.5" r="1.5"></circle>
-                                    <circle cx="16.5" cy="14.5" r="1.5"></circle>
-                                </svg>
-                                Generar con IA
-                            </>
-                        )}
-                    </button>
-                    {!canGenerateAI && (
-                        <span className="text-xs text-slate-400">Completa título y departamento primero</span>
-                    )}
-                </div>
-                {aiError && (
-                    <span className="text-xs text-red-500">{aiError}</span>
-                )}
-            </div>
-
-            <div>
-                <label className={LABEL_CLASSES}>
-                    Descripción del puesto <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                    className={`${INPUT_CLASSES} resize-none h-48`}
-                    value={vacante.descripcion}
-                    onChange={(e) => updateField('descripcion', e.target.value)}
-                    placeholder="Describe las funciones principales del puesto, el equipo de trabajo y los objetivos..."
-                />
-                <span className="text-xs text-slate-400 mt-1 block">{vacante.descripcion.length}/1000 caracteres</span>
-            </div>
-
-            <div>
-                <label className={LABEL_CLASSES}>
-                    Responsabilidades principales <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                    className={`${fieldErrors.responsabilidades ? INPUT_ERROR_CLASSES : INPUT_CLASSES} resize-none h-32`}
-                    value={vacante.responsabilidades}
-                    onChange={(e) => updateField('responsabilidades', e.target.value)}
-                    placeholder="Lista las responsabilidades principales del puesto..."
-                    aria-invalid={!!fieldErrors.responsabilidades}
-                    aria-describedby={fieldErrors.responsabilidades ? 'error-responsabilidades' : undefined}
-                />
-                {fieldErrors.responsabilidades && (
-                    <p id="error-responsabilidades" className="mt-1 text-sm text-red-500">{fieldErrors.responsabilidades}</p>
-                )}
-            </div>
+      {/* Botón Generar con IA */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={generateWithAI}
+            disabled={!canGenerateAI || generatingAI}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${canGenerateAI && !generatingAI
+                ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:shadow-lg hover:shadow-purple-500/30'
+                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+              }`}
+          >
+            {generatingAI ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                Generando...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"></path>
+                  <circle cx="7.5" cy="14.5" r="1.5"></circle>
+                  <circle cx="16.5" cy="14.5" r="1.5"></circle>
+                </svg>
+                Generar con IA
+              </>
+            )}
+          </button>
+          {!canGenerateAI && (
+            <span className="text-xs text-slate-400">Completa título y departamento primero</span>
+          )}
         </div>
-    );
+        {aiError && (
+          <span className="text-xs text-red-500">{aiError}</span>
+        )}
+      </div>
+
+      <div>
+        <label className={LABEL_CLASSES}>
+          Descripción del puesto <span className="text-red-500">*</span>
+        </label>
+        <textarea
+          className={`${INPUT_CLASSES} resize-none h-48`}
+          value={vacante.descripcion}
+          onChange={(e) => updateField('descripcion', e.target.value)}
+          placeholder="Describe las funciones principales del puesto, el equipo de trabajo y los objetivos..."
+        />
+        <span className="text-xs text-slate-400 mt-1 block">{vacante.descripcion.length}/1000 caracteres</span>
+      </div>
+
+      <div>
+        <label className={LABEL_CLASSES}>
+          Responsabilidades principales <span className="text-red-500">*</span>
+        </label>
+        <textarea
+          className={`${fieldErrors.responsabilidades ? INPUT_ERROR_CLASSES : INPUT_CLASSES} resize-none h-32`}
+          value={vacante.responsabilidades}
+          onChange={(e) => updateField('responsabilidades', e.target.value)}
+          placeholder="Lista las responsabilidades principales del puesto..."
+          aria-invalid={!!fieldErrors.responsabilidades}
+          aria-describedby={fieldErrors.responsabilidades ? 'error-responsabilidades' : undefined}
+        />
+        {fieldErrors.responsabilidades && (
+          <p id="error-responsabilidades" className="mt-1 text-sm text-red-500">{fieldErrors.responsabilidades}</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default VacanteStep1;

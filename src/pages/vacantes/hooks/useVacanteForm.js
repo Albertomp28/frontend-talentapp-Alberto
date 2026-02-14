@@ -55,26 +55,41 @@ export const useVacanteForm = () => {
           const result = await vacancyService.getById(id);
           if (result.success && result.data) {
             const vacanteData = result.data;
+
+            // Helper function to ensure field is a string
+            const ensureString = (value) => {
+              if (typeof value === 'string') return value;
+              if (Array.isArray(value)) return value.join('\n');
+              return String(value || '');
+            };
+
+            // Helper function to ensure field is an array
+            const ensureArray = (value) => {
+              if (Array.isArray(value)) return value;
+              if (typeof value === 'string' && value.trim()) return [value];
+              return [];
+            };
+
             setVacante({
-              titulo: vacanteData.titulo || '',
-              departamentoId: vacanteData.departamentoId || '',
-              departamento: vacanteData.departamento || '',
-              descripcion: vacanteData.descripcion || '',
-              responsabilidades: vacanteData.responsabilidades || '',
-              ubicacion: vacanteData.ubicacion || '',
-              direccionDetalle: vacanteData.direccionDetalle || '',
-              modalidad: vacanteData.modalidad || '',
-              tipoContrato: vacanteData.tipoContrato || '',
-              moneda: vacanteData.moneda || 'CRC',
-              salarioMin: vacanteData.salarioMin || '',
-              salarioMax: vacanteData.salarioMax || '',
+              titulo: ensureString(vacanteData.titulo),
+              departamentoId: ensureString(vacanteData.departamentoId),
+              departamento: ensureString(vacanteData.departamento),
+              descripcion: ensureString(vacanteData.descripcion),
+              responsabilidades: ensureString(vacanteData.responsabilidades),
+              ubicacion: ensureString(vacanteData.ubicacion),
+              direccionDetalle: ensureString(vacanteData.direccionDetalle),
+              modalidad: ensureString(vacanteData.modalidad),
+              tipoContrato: ensureString(vacanteData.tipoContrato),
+              moneda: ensureString(vacanteData.moneda) || 'CRC',
+              salarioMin: ensureString(vacanteData.salarioMin),
+              salarioMax: ensureString(vacanteData.salarioMax),
               mostrarSalario: vacanteData.mostrarSalario ?? true,
-              requisitosMinimos: vacanteData.requisitosMinimos || [],
-              habilidadesDeseadas: vacanteData.habilidadesDeseadas || [],
-              beneficios: vacanteData.beneficios || [],
-              reclutadorNombre: vacanteData.reclutadorNombre || '',
-              reclutadorEmail: vacanteData.reclutadorEmail || '',
-              reclutadorTelefono: vacanteData.reclutadorTelefono || '',
+              requisitosMinimos: ensureArray(vacanteData.requisitosMinimos),
+              habilidadesDeseadas: ensureArray(vacanteData.habilidadesDeseadas),
+              beneficios: ensureArray(vacanteData.beneficios),
+              reclutadorNombre: ensureString(vacanteData.reclutadorNombre),
+              reclutadorEmail: ensureString(vacanteData.reclutadorEmail),
+              reclutadorTelefono: ensureString(vacanteData.reclutadorTelefono),
             });
             setCreatedVacanteId(vacanteData.id);
           } else {
@@ -212,15 +227,15 @@ export const useVacanteForm = () => {
     setStepAttempted({ 1: true, 2: true, 3: true });
 
     // Comprehensive client-side validation
-    if (!vacante.titulo?.trim()) {
-      setError('El titulo de la vacante es obligatorio');
+    if (!vacante.titulo?.trim() || vacante.titulo.trim().length < 2) {
+      setError('El titulo de la vacante debe tener al menos 2 caracteres');
       return;
     }
     if (!vacante.departamentoId) {
       setError('El departamento es obligatorio');
       return;
     }
-    if (!vacante.responsabilidades?.trim()) {
+    if (!vacante.responsabilidades || (typeof vacante.responsabilidades === 'string' && !vacante.responsabilidades.trim())) {
       setError('Las responsabilidades son obligatorias');
       return;
     }
@@ -251,6 +266,20 @@ export const useVacanteForm = () => {
     if (!isValidEmail(vacante.reclutadorEmail)) {
       setError('Ingresa un email valido para el reclutador');
       return;
+    }
+
+    // Validate salary range
+    if (vacante.salarioMin && vacante.salarioMax) {
+      const min = Number(vacante.salarioMin);
+      const max = Number(vacante.salarioMax);
+      if (min < 0 || max < 0) {
+        setError('El salario no puede ser negativo');
+        return;
+      }
+      if (min > max) {
+        setError('El salario minimo debe ser menor o igual al salario maximo');
+        return;
+      }
     }
 
     setSaving(true);
@@ -304,7 +333,9 @@ export const useVacanteForm = () => {
 
   // ── Validation ──────────────────────────────────────────────────────
   const isStep1Valid = Boolean(
-    vacante.titulo?.trim() && vacante.departamentoId && vacante.responsabilidades?.trim()
+    vacante.titulo?.trim().length >= 2 &&
+    vacante.departamentoId &&
+    (typeof vacante.responsabilidades === 'string' && vacante.responsabilidades.trim())
   );
   const isStep2Valid = Boolean(vacante.ubicacion && vacante.modalidad && vacante.tipoContrato);
   const isStep3Valid = Boolean(
@@ -323,7 +354,11 @@ export const useVacanteForm = () => {
 
     // Step 1 errors (only if user tried to advance past step 1)
     if (stepAttempted[1]) {
-      if (!vacante.titulo?.trim()) errors.titulo = 'El titulo del puesto es obligatorio';
+      if (!vacante.titulo?.trim()) {
+        errors.titulo = 'El titulo del puesto es obligatorio';
+      } else if (vacante.titulo.trim().length < 2) {
+        errors.titulo = 'El titulo debe tener al menos 2 caracteres';
+      }
       if (!vacante.departamentoId) errors.departamentoId = 'Selecciona un departamento';
       if (!vacante.responsabilidades?.trim()) errors.responsabilidades = 'Las responsabilidades son obligatorias';
     }

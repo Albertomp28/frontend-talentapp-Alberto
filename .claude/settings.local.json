@@ -36,7 +36,18 @@
       "Bash(__NEW_LINE_654278bb1608683f__ curl -s -X POST http://localhost:3000/vacancies -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\n    \"\"title\"\": \"\"Desarrollador Frontend Test\"\",\n    \"\"departmentId\"\": \"\"041f1363-addf-42b9-92d2-00c06a993b86\"\",\n    \"\"description\"\": {\n      \"\"schema_version\"\": \"\"1.0\"\",\n      \"\"must_have\"\": [{\"\"requirement\"\": \"\"React\"\"}],\n      \"\"nice_to_have\"\": [{\"\"requirement\"\": \"\"TypeScript\"\"}],\n      \"\"responsibilities\"\": [{\"\"description\"\": \"\"Descripcion general del puesto\"\"}, {\"\"description\"\": \"\"Desarrollar interfaces de usuario\"\"}],\n      \"\"location\"\": {\n        \"\"province\"\": \"\"San Jose\"\",\n        \"\"address_detail\"\": \"\"\"\"\n      },\n      \"\"modality\"\": \"\"remoto\"\",\n      \"\"contract_type\"\": \"\"tiempo_indefinido\"\",\n      \"\"compensation\"\": {\n        \"\"min_salary\"\": 1000,\n        \"\"max_salary\"\": 3000,\n        \"\"currency\"\": \"\"USD\"\"\n      },\n      \"\"benefits\"\": [{\"\"benefit\"\": \"\"Seguro medico\"\"}]\n    }\n  }')",
       "Bash(docker-compose ps:*)",
       "Bash(openssl rand:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(powershell:*)",
+      "Bash(cmd:*)",
+      "Bash(Get-Content -Path \"C:\\\\Users\\\\betom\\\\OneDrive\\\\Documentos\\\\GitHub\\\\frontend-talentapp-Alberto\\\\src\\\\services\\\\aiService.js\")",
+      "Bash(dir:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(where:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(wsl:*)",
+      "Bash($env:PATH = \"C:\\\\Program Files\\\\Git\\\\bin;$env:PATH\")",
+      "Bash(bash:*)",
+      "Bash(docker.exe ps:*)"
     ]
   }
 }

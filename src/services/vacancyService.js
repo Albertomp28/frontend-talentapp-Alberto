@@ -225,7 +225,7 @@ const mapFrontendToBackend = (data) => {
   // Always include required fields (title and departmentId)
   const payload = {
     title: data.titulo || '',
-    departmentId: data.departamentoId || '',
+    departmentId: data.departamentoId,
   };
 
   // Build description object matching backend schema
@@ -339,6 +339,18 @@ const mapFrontendToBackend = (data) => {
 };
 
 /**
+ * Helper function to safely extract a value from different formats
+ */
+const safeExtract = (value, transform = (v) => v, defaultValue = '') => {
+  if (value == null) return defaultValue;
+  try {
+    return transform(value);
+  } catch {
+    return defaultValue;
+  }
+};
+
+/**
  * Map backend API data to frontend format
  */
 const mapBackendToFrontend = (vacancy) => {
@@ -346,33 +358,85 @@ const mapBackendToFrontend = (vacancy) => {
 
   const desc = vacancy.description || {};
 
+  // Helper to extract description from responsibilities array
+  // Backend may send: [{ description: '...' }, ...] or ['...', ...] or just string
+  const extractResponsibilitiesText = (resp) => {
+    if (!resp) return '';
+
+    // If array
+    if (Array.isArray(resp)) {
+      if (resp.length === 0) return '';
+
+      // If array of strings
+      if (typeof resp[0] === 'string') {
+        return resp.join('\n');
+      }
+
+      // If array of objects with description property
+      if (resp[0]?.description != null) {
+        return resp.map((r) => r.description || r).join('\n');
+      }
+
+      // If array of objects, try to stringify each
+      return resp.map((r) => String(r)).join('\n');
+    }
+
+    // If object
+    if (typeof resp === 'object') {
+      if (resp.description) return resp.description;
+      return String(resp);
+    }
+
+    // If string
+    return String(resp);
+  };
+
   // Separar la primera responsabilidad como descripción y el resto como responsabilidades
   const responsibilities = desc.responsibilities || [];
-  const descripcion = responsibilities.length > 0 ? responsibilities[0]?.description || '' : '';
-  const responsabilidades = responsibilities.slice(1).map((r) => r.description).join('\n');
+  const allRespText = extractResponsibilitiesText(responsibilities);
+
+  // Split by newline to separate first line (description) from rest (responsabilidades)
+  const respLines = allRespText.split('\n').filter((line) => line.trim());
+  const descripcion = respLines[0] || '';
+  const responsabilidades = respLines.slice(1).join('\n');
+
+  // Helper to extract array from backend format
+  const extractArray = (arr, key = '') => {
+    if (!arr) return [];
+    if (Array.isArray(arr)) {
+      if (key && arr[0]?.[key] != null) {
+        return arr.map((item) => item[key]);
+      }
+      return arr.map((item) => String(item || ''));
+    }
+    if (typeof arr === 'string' && arr.trim()) {
+      return [arr];
+    }
+    return [];
+  };
 
   return {
-    id: vacancy.id,
-    titulo: vacancy.title,
-    departamento: vacancy.department?.name || '',
-    departamentoId: vacancy.department?.id || '',
+    id: safeExtract(vacancy.id),
+    titulo: safeExtract(vacancy.title),
+    departamento: safeExtract(vacancy.department?.name),
+    departamentoId: safeExtract(vacancy.department?.id),
     descripcion: descripcion,
     responsabilidades: responsabilidades,
-    ubicacion: desc.location?.province || '',
-    direccionDetalle: desc.location?.address_detail || '',
+    ubicacion: safeExtract(desc.location?.province),
+    direccionDetalle: safeExtract(desc.location?.address_detail),
     modalidad: mapModalityToFrontend(desc.modality),
     tipoContrato: mapContractToFrontend(desc.contract_type),
-    moneda: desc.compensation?.currency || 'CRC',
-    salarioMin: desc.compensation?.min_salary || '',
-    salarioMax: desc.compensation?.max_salary || '',
+    moneda: safeExtract(desc.compensation?.currency, (v) => v, 'CRC'),
+    salarioMin: safeExtract(desc.compensation?.min_salary, (v) => String(v), ''),
+    salarioMax: safeExtract(desc.compensation?.max_salary, (v) => String(v), ''),
     mostrarSalario: !!desc.compensation,
-    requisitosMinimos: desc.must_have?.map((r) => r.requirement) || [],
-    habilidadesDeseadas: desc.nice_to_have?.map((r) => r.requirement) || [],
-    beneficios: desc.benefits?.map((b) => b.benefit) || [],
-    estado: vacancy.status,
-    fechaCreacion: vacancy.createdAt,
-    fechaActualizacion: vacancy.updatedAt,
-    createdBy: vacancy.createdBy,
+    requisitosMinimos: extractArray(desc.must_have, 'requirement'),
+    habilidadesDeseadas: extractArray(desc.nice_to_have, 'requirement'),
+    beneficios: extractArray(desc.benefits, 'benefit'),
+    estado: safeExtract(vacancy.status),
+    fechaCreacion: safeExtract(vacancy.createdAt),
+    fechaActualizacion: safeExtract(vacancy.updatedAt),
+    createdBy: safeExtract(vacancy.createdBy),
   };
 };
 

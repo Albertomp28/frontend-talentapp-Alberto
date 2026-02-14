@@ -16,13 +16,22 @@ import {
 import { useMultiCVUpload } from './useMultiCVUpload';
 
 /**
+ * Helper to safely convert a value to string
+ */
+const ensureString = (value) => {
+    if (typeof value === 'string') return value;
+    if (Array.isArray(value)) return value.join('\n');
+    return String(value || '');
+};
+
+/**
  * Map backend vacancy to format expected by CV processor
  */
 const mapVacancyForCV = (vacancy) => ({
     id: vacancy.id,
-    titulo: vacancy.titulo,
-    descripcion: vacancy.descripcion || vacancy.responsabilidades || '',
-    departamento: vacancy.departamento,
+    titulo: ensureString(vacancy.titulo),
+    descripcion: ensureString(vacancy.descripcion) || ensureString(vacancy.responsabilidades) || '',
+    departamento: ensureString(vacancy.departamento),
     nivel: 'mid', // Default, backend doesn't have this field yet
     requisitos: [
         ...(vacancy.requisitosMinimos || []),

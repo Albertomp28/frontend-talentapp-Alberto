@@ -6,7 +6,10 @@
  */
 
 // Use environment variable or fallback to localhost for development outside Docker
-const CV_PROCESSOR_URL = import.meta.env.VITE_CV_PROCESSOR_URL || 'http://localhost:8000';
+import config from '../config';
+
+const CV_PROCESSOR_URL = config.CV_PROCESSOR_URL;
+const CV_PROCESSOR_API_KEY = config.CV_PROCESSOR_API_KEY;
 
 // Validation constants
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -25,8 +28,14 @@ const extractText = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
 
+    const headers = {};
+    if (CV_PROCESSOR_API_KEY) {
+      headers['X-API-Key'] = CV_PROCESSOR_API_KEY;
+    }
+
     const response = await fetch(`${CV_PROCESSOR_URL}/api/v1/cv/extract-text`, {
       method: 'POST',
+      headers,
       body: formData,
     });
 
@@ -133,8 +142,14 @@ const processCV = async (file, candidateId, vacancyData = {}) => {
     formData.append('file', file);
     formData.append('candidate_id', candidateId);
 
+    const headers = {};
+    if (CV_PROCESSOR_API_KEY) {
+      headers['X-API-Key'] = CV_PROCESSOR_API_KEY;
+    }
+
     const response = await fetch(`${CV_PROCESSOR_URL}/api/v1/cv/process`, {
       method: 'POST',
+      headers,
       body: formData,
     });
 
@@ -228,8 +243,14 @@ const analyzeCV = async (file, vacancyData = {}, candidateId = null) => {
 
     formData.append('vacancy_json', JSON.stringify(vacancyPayload));
 
+    const headers = {};
+    if (CV_PROCESSOR_API_KEY) {
+      headers['X-API-Key'] = CV_PROCESSOR_API_KEY;
+    }
+
     const response = await fetch(`${CV_PROCESSOR_URL}/api/v1/match/cv-vacancy`, {
       method: 'POST',
+      headers,
       body: formData,
     });
 
@@ -396,8 +417,14 @@ const analyzeDeep = async (file, candidateId, vacancyData = {}, model = 'haiku')
     formData.append('vacancy_json', JSON.stringify(vacancyPayload));
     formData.append('model', model);
 
+    const headers = {};
+    if (CV_PROCESSOR_API_KEY) {
+      headers['X-API-Key'] = CV_PROCESSOR_API_KEY;
+    }
+
     const response = await fetch(`${CV_PROCESSOR_URL}/api/v1/analyze/deep`, {
       method: 'POST',
+      headers,
       body: formData,
     });
 
